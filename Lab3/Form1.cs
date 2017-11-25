@@ -18,6 +18,9 @@ namespace Lab3
         }
         List<Dot> DotsList = new List<Dot>();
 
+        /// <summary>
+        /// Заполняет поле-массив DotsList десятью рандомными точками
+        /// </summary>
         public void SetDots()
         {
             Random coord = new Random();
