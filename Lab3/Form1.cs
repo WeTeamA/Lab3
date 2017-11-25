@@ -17,7 +17,7 @@ namespace Lab3
             InitializeComponent();
         }
         List<Dot> DotsList = new List<Dot>();
-
+        List<Connection> ConnectionsList= new List<Connection>();
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
         /// </summary>
@@ -55,6 +55,32 @@ namespace Lab3
                 pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
         }
+
+        public void SetConnecrions()
+        {
+            Random random = new Random();
+            for (int i=0;i<10;i++)
+            {
+                int max = random.Next(20, 474);
+                int min = random.Next(20, max);
+                double flow = random.Next(10, 100);
+                ConnectionsList.Add(new Connection(max, min, flow));
+            }
+        }
+        /// <summary>
+        /// Рассчет потака от точки через связь
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="Summ"></param>
+        /// <returns></returns>
+        public double GetFlow(Connection a, Dot b, double Summ)  // Summ - сумма максимальных потоков всех связей
+        {
+            return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+        }
+
+        
+
 
         private void button_start_Click(object sender, EventArgs e)
         {

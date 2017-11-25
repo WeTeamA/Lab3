@@ -11,9 +11,9 @@ namespace Lab3
         public int x;
         public int y;
         bool type;
-        int speed;
-        int size;
-        int fill;
+        public int speed;
+        public int size;
+        public int fill;
 
         public Dot(int X, int Y, bool Type)
         {
