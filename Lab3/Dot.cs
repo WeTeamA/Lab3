@@ -22,10 +22,5 @@ namespace Lab3
             this.speed = speed;
             fill = size / 2;
         }
-
-        public bool IsDot()
-        {
-
-        }
     }
 }

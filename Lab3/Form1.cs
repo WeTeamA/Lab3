@@ -112,7 +112,6 @@ namespace Lab3
             return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
-
         /// <summary>
         /// Заполняет ListBox связями
         /// </summary>
@@ -129,32 +128,39 @@ namespace Lab3
                 
         }
 
+        /// <summary>
+        /// Возвращает выделенную в данный момент связь типа Connection
+        /// </summary>
+        /// <returns></returns>
+        public Connection GiveSelectedItem()
+        {
+            Connection Connection = new Connection();
+            int min = 0;
+            int max = 0;
+            int flow = 0;
+            try
+            {
+                min = Convert.ToInt32(listView.SelectedItems[0].Text);
+                max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
+                flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
+            }
+            catch
+            {
+                MessageBox.Show("Пожалуйста, выберите связь, которую хотите провести!");
+            }
+            foreach (var conect in ConnectionsList)
+            {
+                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
+                    Connection = conect;
+            }
+            listView.SelectedItems.Clear();
+            return Connection;
+        }
 
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
             FillListView();
-
         }
-
-        private void ListView_ItemActivate(object sender, EventArgs e)
-        {
-            int min = Convert.ToInt32(listView.SelectedItems[0].Text);
-            int max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
-            int flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
-            foreach (var conect in ConnectionsList)
-            {
-                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
-                {
-                    con = conect;
-                }
-            }
-            listView.SelectedItems.Clear();
-            Debug.WriteLine(con.minWay);
-            Debug.WriteLine(con.maxWay);
-            Debug.WriteLine(con.flow);
-        }
-
-
     }
 }
