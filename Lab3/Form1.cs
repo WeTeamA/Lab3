@@ -21,6 +21,7 @@ namespace Lab3
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList = new List<Connection>();
         int size = 200; //Брать из файла настроек
+        Dot Dot;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -29,7 +30,7 @@ namespace Lab3
         {
             Random coord = new Random();
             Random speed = new Random();
-            SolidBrush brush = new SolidBrush(Color.Green);
+            SolidBrush brush = new SolidBrush(Color.Blue);
             for (int i = 0; i < 10; i++)
             {
                 bool check = true;
@@ -146,7 +147,8 @@ namespace Lab3
             }
             catch
             {
-                MessageBox.Show("Пожалуйста, выберите связь, которую хотите провести!");
+                return null;
+                //MessageBox.Show("Пожалуйста, выберите связь, которую хотите провести!");
             }
             foreach (var conect in ConnectionsList)
             {
@@ -161,6 +163,44 @@ namespace Lab3
         {
             SetDots();
             FillListView();
+        }
+
+        Color pixelColorM;
+
+        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+           pixelColorM = GetColorAt(e.Location);
+        }
+
+        private Color GetColorAt(Point point)
+        {
+            Bitmap b = new Bitmap(pictureBox.ClientSize.Width, pictureBox.Height);
+            pictureBox.DrawToBitmap(b, pictureBox.ClientRectangle);
+            Color colour = b.GetPixel(point.X, point.Y);
+            b.Dispose();
+            return colour;
+            //return ((Bitmap)pictureBox.Image).GetPixel(point.X, point.Y);
+        }
+
+        Color pixelColorC;
+
+        private void pictureBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (GiveSelectedItem() != null)
+            {
+                if (e.Button == MouseButtons.Left)
+                    pixelColorC = GetColorAt(e.Location);
+            }
+            if (pixelColorC == Color.Blue)
+            {
+                foreach(var dot in DotsList)
+                {
+                    if (Math.Sqrt(Math.Abs(e.Location.X - dot.x)) + Math.Sqrt(Math.Abs(e.Location.Y - dot.y)) <= 5)
+                    {
+                        Dot = dot;
+                    }
+                }
+            }
         }
     }
 }
