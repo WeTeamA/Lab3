@@ -15,7 +15,6 @@ namespace Lab3
         public Form1()
         {
             InitializeComponent();
-            int i = 0;
         }
     }
 }
