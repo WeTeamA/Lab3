@@ -56,6 +56,10 @@ namespace Lab3
             }
         }
 
+
+        /// <summary>
+        /// Создаем связи или добавляесм одну
+        /// </summary>
         public void SetConnecrions()
         {
             Random random = new Random();
@@ -77,6 +81,21 @@ namespace Lab3
                     ConnectionsList.Add(new Connection(max, min, flow));
             }
         }
+
+        /// <summary>
+        /// Рассчет суммы максимальных потоков всех связей
+        /// </summary>
+        /// <returns></returns>
+        public double GetSummFlow()
+        {
+            double Summ = 0;
+            foreach(Connection con in ConnectionsList)
+            {
+                Summ += con.flow;
+            }
+            return Summ;
+        }
+
         /// <summary>
         /// Рассчет потака от точки через связь
         /// </summary>
@@ -89,12 +108,11 @@ namespace Lab3
             return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
-        
-
-
+       
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
+            SetConnecrions();
         }
     }
 }
