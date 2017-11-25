@@ -19,7 +19,6 @@ namespace Lab3
         }
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList = new List<Connection>();
-        Connection Сonnection = new Connection(); //Выделенная в TreeView связь
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками и выводит их на экран
@@ -111,7 +110,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Заполняет ListView связями
+        /// Заполняет ListView связями (используется 1 раз)
         /// </summary>
         public void FillListView()
         {
@@ -125,30 +124,39 @@ namespace Lab3
             }    
         }
 
+        /// <summary>
+        /// Возвращает выделенную в данный момент связь типа Connection
+        /// </summary>
+        /// <returns></returns>
+        public Connection GiveSelectedItem()
+        {
+            Connection Connection = new Connection();
+            int min = 0;
+            int max = 0;
+            int flow = 0;
+            try
+            {
+                 min = Convert.ToInt32(listView.SelectedItems[0].Text);
+                 max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
+                 flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
+            }
+            catch
+            {
+                MessageBox.Show("Пожалуйста, выберите связь, которую хотите провести!");
+            }
+                foreach (var conect in ConnectionsList)
+            {
+                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
+                    Connection = conect;
+            }
+            listView.SelectedItems.Clear();
+            return Connection;
+        }
+
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
             FillListView();
-        }
-
-        /// <summary>
-        /// Событие при двойном клике на ListView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListView_ItemActivate(object sender, EventArgs e)
-        {
-            int min = Convert.ToInt32(listView.SelectedItems[0].Text);
-            int max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
-            int flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
-            foreach (var conect in ConnectionsList)
-            {
-                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
-                {
-                    Сonnection = conect;
-                }
-            }
-            listView.SelectedItems.Clear();
         }
     }
 }
