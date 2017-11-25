@@ -27,8 +27,6 @@ namespace Lab3
                 if (i == 0)
                 {
                     DotsList.Add(new Dot(coord.Next(0, 460), coord.Next(0, 460)));
-                    DotsList[i].x = coord.Next(0, 460);
-                    DotsList[i].y = coord.Next(0, 460);
                 }
                 else
                 {
