@@ -10,7 +10,7 @@ namespace Lab3
     {
         public int x;
         public int y;
-        bool type;
+        public bool type;
         public int speed;
         public int size;
         public int fill;
@@ -41,7 +41,7 @@ namespace Lab3
             speed = size / 10;
             fill = size / 2;
         }
-
+        
 
 
     }
