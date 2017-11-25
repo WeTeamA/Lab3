@@ -34,8 +34,8 @@ namespace Lab3
                 }
                 else
                 {
-                    int x = coord.Next(0, 460);
-                    int y = coord.Next(0, 460);
+                    int x = coord.Next(0, 474);
+                    int y = coord.Next(0, 474);
                     for (int j = 0; j < i; j++)
                     {
                         if (Math.Abs(x - DotsList[j].x) < 20 || Math.Abs(y - DotsList[j].y) < 20)
@@ -49,7 +49,8 @@ namespace Lab3
                         i--;
                 }
             }
-            foreach (var point in DotsList)
+
+            foreach (var point in DotsList) //Заполняем PictureBox
             {
                 pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
