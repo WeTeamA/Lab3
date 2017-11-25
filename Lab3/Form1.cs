@@ -59,12 +59,22 @@ namespace Lab3
         public void SetConnecrions()
         {
             Random random = new Random();
-            for (int i=0;i<10;i++)
+            if (ConnectionsList.Count == 0)                 // Если связей нет, то делаем 10 связей
             {
-                int max = random.Next(20, 474);
-                int min = random.Next(20, max);
-                double flow = random.Next(10, 100);
-                ConnectionsList.Add(new Connection(max, min, flow));
+                for (int i = 0; i < 10; i++)
+                {
+                    int max = random.Next(20, 474);
+                    int min = random.Next(20, max);
+                    double flow = random.Next(10, 100);
+                    ConnectionsList.Add(new Connection(max, min, flow));
+                }
+            }
+            else                                            // Если уже есть связи, то добавляем только одну, т.к в проге надо будет использовать 
+            {                                               // одну связь, то есть одну удалять.
+                    int max = random.Next(20, 474);        
+                    int min = random.Next(20, max);
+                    double flow = random.Next(10, 100);
+                    ConnectionsList.Add(new Connection(max, min, flow));
             }
         }
         /// <summary>
