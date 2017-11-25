@@ -23,6 +23,10 @@ namespace Lab3
             maxWay = Max;
             minWay = Min;
         }
-        
+
+        public Connection()
+        {
+
+        }
     }
 }
