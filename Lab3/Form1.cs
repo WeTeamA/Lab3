@@ -21,7 +21,7 @@ namespace Lab3
         List<Connection> ConnectionsList= new List<Connection>();
         Connection con = new Connection();
         /// <summary>
-        /// Заполняет поле-массив DotsList десятью рандомными точками
+        /// Заполняет поле-массив DotsList десятью рандомными точками и выводит их на экран
         /// </summary>
         public void SetDots()
         {
@@ -52,7 +52,7 @@ namespace Lab3
                 }
             }
 
-            foreach (var point in DotsList) //Заполняем PictureBox
+            foreach (var point in DotsList) //Выводим на PictureBox
             {
                 pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
@@ -109,9 +109,8 @@ namespace Lab3
             return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
-
         /// <summary>
-        /// Заполняет ListBox связями
+        /// Заполняет ListView связями
         /// </summary>
         public void FillListView()
         {
@@ -122,18 +121,20 @@ namespace Lab3
                 c.SubItems.Add(conect.maxWay.ToString());
                 c.SubItems.Add(conect.flow.ToString());
                 listView.Items.Add(c);
-            }
-                
+            }    
         }
-
 
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
             FillListView();
-
         }
 
+        /// <summary>
+        /// Событие при двойном клике на ListView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListView_ItemActivate(object sender, EventArgs e)
         {
             int min = Convert.ToInt32(listView.SelectedItems[0].Text);
@@ -147,9 +148,6 @@ namespace Lab3
                 }
             }
             listView.SelectedItems.Clear();
-            Debug.WriteLine(con.minWay);
-            Debug.WriteLine(con.maxWay);
-            Debug.WriteLine(con.flow);
         }
     }
 }
