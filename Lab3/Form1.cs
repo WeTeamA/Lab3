@@ -24,12 +24,13 @@ namespace Lab3
         public void SetDots()
         {
             Random coord = new Random();
+            SolidBrush brush = new SolidBrush(Color.Green);
             for (int i = 0; i < 10; i++)
             {
                 bool check = true;
                 if (i == 0)
                 {
-                    DotsList.Add(new Dot(coord.Next(0, 460), coord.Next(0, 460)));
+                    DotsList.Add(new Dot(coord.Next(0, 474), coord.Next(0, 474)));
                 }
                 else
                 {
@@ -48,11 +49,15 @@ namespace Lab3
                         i--;
                 }
             }
+            foreach (var point in DotsList)
+            {
+                pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+            }
         }
 
         private void button_start_Click(object sender, EventArgs e)
         {
-            SetDots();  
+            SetDots();
         }
     }
 }

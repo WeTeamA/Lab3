@@ -35,6 +35,7 @@
             // 
             // pictureBox
             // 
+            this.pictureBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.pictureBox.Location = new System.Drawing.Point(13, 13);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(480, 480);
