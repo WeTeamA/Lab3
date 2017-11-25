@@ -18,8 +18,9 @@ namespace Lab3
             InitializeComponent();
         }
         List<Dot> DotsList = new List<Dot>();
-        List<Connection> ConnectionsList= new List<Connection>();
-        Connection con = new Connection();
+        List<Connection> ConnectionsList = new List<Connection>();
+        Connection Сonnection = new Connection(); //Выделенная в TreeView связь
+
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками и выводит их на экран
         /// </summary>
@@ -144,7 +145,7 @@ namespace Lab3
             {
                 if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
                 {
-                    con = conect;
+                    Сonnection = conect;
                 }
             }
             listView.SelectedItems.Clear();
