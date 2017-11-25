@@ -28,12 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.button_start = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // pictureBox
+            // 
+            this.pictureBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.pictureBox.Location = new System.Drawing.Point(13, 13);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(480, 480);
+            this.pictureBox.TabIndex = 0;
+            this.pictureBox.TabStop = false;
+            // 
+            // button_start
+            // 
+            this.button_start.Location = new System.Drawing.Point(523, 210);
+            this.button_start.Name = "button_start";
+            this.button_start.Size = new System.Drawing.Size(136, 23);
+            this.button_start.TabIndex = 1;
+            this.button_start.Text = "Начать игру";
+            this.button_start.UseVisualStyleBackColor = true;
+            this.button_start.Click += new System.EventHandler(this.button_start_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(684, 505);
+            this.Controls.Add(this.button_start);
+            this.Controls.Add(this.pictureBox);
+            this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox pictureBox;
+        private System.Windows.Forms.Button button_start;
     }
 }
 
