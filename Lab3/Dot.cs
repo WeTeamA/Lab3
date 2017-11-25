@@ -8,8 +8,8 @@ namespace Lab3
 {
     public class Dot
     {
-        int x;
-        int y;
+        public int x;
+        public int y;
         bool type;
         int speed;
         int size;

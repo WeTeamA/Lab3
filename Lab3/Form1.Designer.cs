@@ -49,6 +49,7 @@
             this.button_start.TabIndex = 1;
             this.button_start.Text = "Начать игру";
             this.button_start.UseVisualStyleBackColor = true;
+            this.button_start.Click += new System.EventHandler(this.button_start_Click);
             // 
             // Form1
             // 
