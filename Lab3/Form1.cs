@@ -19,6 +19,7 @@ namespace Lab3
         }
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList = new List<Connection>();
+        int size = 200; //Брать из файла настроек
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками и выводит их на экран
@@ -26,18 +27,19 @@ namespace Lab3
         public void SetDots()
         {
             Random coord = new Random();
+            Random speed = new Random();
             SolidBrush brush = new SolidBrush(Color.Green);
             for (int i = 0; i < 10; i++)
             {
                 bool check = true;
                 if (i == 0)
                 {
-                    DotsList.Add(new Dot(coord.Next(0, 474), coord.Next(0, 474)));
+                    DotsList.Add(new Dot(coord.Next(0, 470), coord.Next(0, 470), speed.Next(0,1/10*size), size));
                 }
                 else
                 {
-                    int x = coord.Next(0, 474);
-                    int y = coord.Next(0, 474);
+                    int x = coord.Next(0, 470);
+                    int y = coord.Next(0, 470);
                     for (int j = 0; j < i; j++)
                     {
                         if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
@@ -45,7 +47,7 @@ namespace Lab3
                     }
                     if (check == true)
                     {
-                        DotsList.Add(new Dot(x, y));
+                        DotsList.Add(new Dot(x, y, speed.Next(0, 1 / 10 * size), size));
                     }
                     else
                         i--;
