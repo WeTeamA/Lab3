@@ -30,6 +30,10 @@
         {
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.button_start = new System.Windows.Forms.Button();
+            this.listView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,17 +50,45 @@
             // 
             this.button_start.Location = new System.Drawing.Point(519, 470);
             this.button_start.Name = "button_start";
-            this.button_start.Size = new System.Drawing.Size(136, 23);
+            this.button_start.Size = new System.Drawing.Size(185, 23);
             this.button_start.TabIndex = 1;
             this.button_start.Text = "Начать игру";
             this.button_start.UseVisualStyleBackColor = true;
             this.button_start.Click += new System.EventHandler(this.button_start_Click);
             // 
+            // listView
+            // 
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listView.FullRowSelect = true;
+            this.listView.Location = new System.Drawing.Point(519, 12);
+            this.listView.Name = "listView";
+            this.listView.Size = new System.Drawing.Size(185, 451);
+            this.listView.TabIndex = 2;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Details;
+            this.listView.ItemActivate += new System.EventHandler(this.ListView_ItemActivate);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Мин. длина";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Макс. длина";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Поток";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 505);
+            this.ClientSize = new System.Drawing.Size(737, 505);
+            this.Controls.Add(this.listView);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.pictureBox);
             this.Name = "Form1";
@@ -70,6 +102,10 @@
 
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Button button_start;
+        private System.Windows.Forms.ListView listView;
+        public System.Windows.Forms.ColumnHeader columnHeader1;
+        public System.Windows.Forms.ColumnHeader columnHeader2;
+        public System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
 

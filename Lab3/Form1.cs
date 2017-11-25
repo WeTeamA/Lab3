@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Lab3
 {
@@ -18,6 +19,7 @@ namespace Lab3
         }
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList= new List<Connection>();
+        Connection con = new Connection();
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
         /// </summary>
@@ -107,10 +109,47 @@ namespace Lab3
             return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
+
+        /// <summary>
+        /// Заполняет ListBox связями
+        /// </summary>
+        public void FillListView()
+        {
+            SetConnections();
+            foreach (var conect in ConnectionsList)
+            {
+                ListViewItem c = new ListViewItem(conect.minWay.ToString());
+                c.SubItems.Add(conect.maxWay.ToString());
+                c.SubItems.Add(conect.flow.ToString());
+                listView.Items.Add(c);
+            }
+                
+        }
+
+
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
-            SetConnections();
+            FillListView();
+
+        }
+
+        private void ListView_ItemActivate(object sender, EventArgs e)
+        {
+            int min = Convert.ToInt32(listView.SelectedItems[0].Text);
+            int max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
+            int flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
+            foreach (var conect in ConnectionsList)
+            {
+                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
+                {
+                    con = conect;
+                }
+            }
+            listView.SelectedItems.Clear();
+            Debug.WriteLine(con.minWay);
+            Debug.WriteLine(con.maxWay);
+            Debug.WriteLine(con.flow);
         }
     }
 }
