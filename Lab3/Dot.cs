@@ -41,8 +41,5 @@ namespace Lab3
             speed = size / 10;
             fill = size / 2;
         }
-        
-
-
     }
 }

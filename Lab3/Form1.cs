@@ -38,7 +38,7 @@ namespace Lab3
                     int y = coord.Next(0, 474);
                     for (int j = 0; j < i; j++)
                     {
-                        if (Math.Abs(x - DotsList[j].x) < 20 || Math.Abs(y - DotsList[j].y) < 20)
+                        if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
                             check = false;
                     }
                     if (check == true)
@@ -56,11 +56,10 @@ namespace Lab3
             }
         }
 
-
         /// <summary>
         /// Создаем связи или добавляесм одну
         /// </summary>
-        public void SetConnecrions()
+        public void SetConnections()
         {
             Random random = new Random();
             if (ConnectionsList.Count == 0)                 // Если связей нет, то делаем 10 связей
@@ -101,18 +100,17 @@ namespace Lab3
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        /// <param name="Summ"></param>
+        /// <param name="Summ">Сумма максимальных потоков всех связей</param>
         /// <returns></returns>
-        public double GetFlow(Connection a, Dot b, double Summ)  // Summ - сумма максимальных потоков всех связей
+        public double GetFlow(Connection a, Dot b, double Summ) 
         {
             return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
-       
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
-            SetConnecrions();
+            SetConnections();
         }
     }
 }
