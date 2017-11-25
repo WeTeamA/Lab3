@@ -8,6 +8,8 @@ namespace Lab3
 {
     class Point
     {
-
+        int x;
+        int y;
+        bool type;
     }
 }
