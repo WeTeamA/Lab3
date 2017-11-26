@@ -21,8 +21,17 @@ namespace Lab3
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList = new List<Connection>();
         int size = 200; //Брать из файла настроек
+        /// <summary>
+        /// Поле, хранящее в себе первую соединяемую точку
+        /// </summary>
         Dot Dot1;
+        /// <summary>
+        /// Поле, хранящее в себе вторую соединяемую точку
+        /// </summary>
         Dot Dot2;
+        /// <summary>
+        /// Поле для отрисовки игровой картинки с наложенной "анимацией" связи
+        /// </summary>
         Bitmap image = new Bitmap(480, 480);
 
         /// <summary>
@@ -181,6 +190,8 @@ namespace Lab3
 
         private void button_start_Click(object sender, EventArgs e)
         {
+            button_start.Enabled = false;
+            button_start.Text = "Идет игра...";
             SetDots(10);
             FillListView();
         }
@@ -281,6 +292,11 @@ namespace Lab3
                     listView.Items[i].Selected = true;
             foreach (ListViewItem items in listView.SelectedItems)
                 listView.Items.Remove(items);
+        }
+
+        public void SetConnection() //Переименовать и записать метод макса по отрисовке связи
+        {
+
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
