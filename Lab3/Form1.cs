@@ -227,6 +227,17 @@ namespace Lab3
             }
         }
 
+        /*public void DriwLine()
+        {
+            Bitmap line = null;
+            line = image;
+            Graphics lineGraphics = null;
+            lineGraphics = Graphics.FromImage(line);
+            Pen pen = new Pen(Color.LightGreen);
+            lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, e.Location.X, e.Location.Y);
+            pictureBox.Image = line;
+        }*/
+
         private Color GetColorAt(Point point)
         {
             Color colour = image.GetPixel(point.X, point.Y);
