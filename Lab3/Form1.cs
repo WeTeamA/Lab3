@@ -30,34 +30,35 @@ namespace Lab3
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
         /// </summary>
-        public void SetDots()
+        /// <param name="count">Количество создаваемых точек</param>
+        public void SetDots(int count)
         {
             Random coord = new Random();
             Random speed = new Random();
-            for (int i = 0; i < 10; i++)
+            int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
+            if (DotsList.Count == 0)
+            { 
+                DotsList.Add(new Dot(coord.Next(0, 470), coord.Next(0, 470), speed.Next(0, 1 / 10 * size), size));
+                DotsListCount = 1;
+            }
+            for (int i = DotsList.Count; i < DotsListCount + count-1; i++)
             {
                 bool check = true;
-                if (i == 0)
+                int x = coord.Next(0, 470);
+                int y = coord.Next(0, 470);
+                for (int j = 0; j < i; j++)
                 {
-                    DotsList.Add(new Dot(coord.Next(0, 470), coord.Next(0, 470), speed.Next(0,1/10*size), size));
+                    if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
+                        check = false;
+                }
+                if (check == true)
+                {
+                    DotsList.Add(new Dot(x, y, speed.Next(0, 1 / 10 * size), size));
                 }
                 else
-                {
-                    int x = coord.Next(0, 470);
-                    int y = coord.Next(0, 470);
-                    for (int j = 0; j < i; j++)
-                    {
-                        if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
-                            check = false;
-                    }
-                    if (check == true)
-                    {
-                        DotsList.Add(new Dot(x, y, speed.Next(0, 1 / 10 * size), size));
-                    }
-                    else
-                        i--;
-                }
+                    i--;
             }
+            FillPicBox();
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Заполняет ListBox связями
+        /// Заполняет ListView связями (используется 1 раз)
         /// </summary>
         public void FillListView()
         {
@@ -159,7 +160,7 @@ namespace Lab3
         
 
         /// <summary>
-        /// Заполняем PictureBox
+        /// Заполняет PictureBox точками из DotsList
         /// </summary>
         /// <returns></returns>
         public void FillPicBox()
@@ -177,7 +178,7 @@ namespace Lab3
 
         private void button_start_Click(object sender, EventArgs e)
         {
-            SetDots();
+            SetDots(10);
             FillPicBox();
             FillListView();
         }
