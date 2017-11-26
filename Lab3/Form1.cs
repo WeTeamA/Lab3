@@ -24,8 +24,6 @@ namespace Lab3
         Dot Dot1;
         Dot Dot2;
         Bitmap image = new Bitmap(480, 480);
-        Connection connection;
-
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -151,14 +149,14 @@ namespace Lab3
             }
             catch
             {
-                return null;
+                MessageBox.Show("Пожалуйста, выделите нужную связь"); ;
             }
             foreach (var conect in ConnectionsList)
             {
                 if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
                     Connection = conect;
             }
-            listView.SelectedItems.Clear();
+            //listView.SelectedItems.Clear(); Из-за этой строчки и снимались выделения
             return Connection;
         }
 
@@ -198,9 +196,8 @@ namespace Lab3
                 if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
                 {
                     Pen pen = new Pen(Color.Yellow);
-
                     double way = Math.Sqrt(Math.Abs(e.Location.X - Dot1.x)) + Math.Sqrt(Math.Abs(e.Location.Y - Dot2.y));
-                    if (way >= connection.minWay && way <= connection.maxWay)
+                    if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                     {
                         pen.Color = Color.Yellow;
                     }
@@ -277,10 +274,12 @@ namespace Lab3
         {
             if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
             {
-                connection.first = Dot1;
+                GiveSelectedItem().first = Dot1; //Этим действием и в связь из оригинального массива добавляются точки Dot1 и Dot2 (видимо ссылается)
                 FindDot(e.Location);
-                connection.second = Dot2;
-                Dot1 = null;
+                GiveSelectedItem().second = Dot2;
+                Dot1 = null; //Сбрасываем выделение первой точки
+
+                /*
                 for (int i = 0; i < ConnectionsList.Count; i++)
                 {
                     if (connection == ConnectionsList[i])
@@ -288,18 +287,18 @@ namespace Lab3
                         ConnectionsList[i] = connection;
                     }
                 }
+                */
             }
-            connection = GiveSelectedItem();
+            //connection = GiveSelectedItem();
             if (Dot1 == null) //При выборе первой точки
             {
-                if (connection.maxWay != 0)
+                if (GiveSelectedItem().maxWay != 0)
                 {
                     if (e.Button == MouseButtons.Left)
                     {
                        FindDot(e.Location);
                     }
                 }
-
             }
         }
     }
