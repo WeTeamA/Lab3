@@ -191,9 +191,9 @@ namespace Lab3
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            DrawingConnections();
             if (Dot1 != null)
             {
+                DrawingConnections();
                 pixelColor = GetColorAt(e.Location);
                 if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
                 {
@@ -251,7 +251,10 @@ namespace Lab3
             return colour;
         }
 
-
+        /// <summary>
+        /// Проверяет, пренадлежат ли указанные координаты какой-то точке, если принадлежат - присваивает ее Dot1 или Dot2 
+        /// </summary>
+        /// <param name="point"></param>
         public void FindDot(Point point)
         {
             foreach (var dot in DotsList)
@@ -267,13 +270,12 @@ namespace Lab3
                         Dot2 = dot;
                     }
                 }
-
             }
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (Dot1 != null) //При выборе точки для реализации связи
+            if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
             {
                 connection.first = Dot1;
                 FindDot(e.Location);
@@ -288,7 +290,7 @@ namespace Lab3
                 }
             }
             connection = GiveSelectedItem();
-            if (Dot1 == null)
+            if (Dot1 == null) //При выборе первой точки
             {
                 if (connection.maxWay != 0)
                 {
