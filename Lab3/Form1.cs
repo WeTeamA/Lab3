@@ -165,7 +165,7 @@ namespace Lab3
         
 
         /// <summary>
-        /// Заполняет PictureBox точками из DotsList
+        /// Отрисовывает связи
         /// </summary>
         /// <returns></returns>
         public void DrawingConnections()
@@ -184,7 +184,6 @@ namespace Lab3
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots(10);
-            DrawingConnections();
             FillListView();
         }
 
@@ -195,7 +194,6 @@ namespace Lab3
             DrawingConnections();
             if (Dot1 != null)
             {
-
                 pixelColor = GetColorAt(e.Location);
                 if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
                 {
@@ -228,8 +226,6 @@ namespace Lab3
                     lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
                     pictureBox.Image = line;
                 }
-
-
             }
         }
 
@@ -244,11 +240,17 @@ namespace Lab3
             pictureBox.Image = line;
         }*/
 
+        /// <summary>
+        /// Возвращает цвет типа Color указанной точки
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         private Color GetColorAt(Point point)
         {
             Color colour = image.GetPixel(point.X, point.Y);
             return colour;
         }
+
 
         public void FindDot(Point point)
         {
@@ -271,7 +273,7 @@ namespace Lab3
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (Dot1 != null)
+            if (Dot1 != null) //При выборе точки для реализации связи
             {
                 connection.first = Dot1;
                 FindDot(e.Location);
@@ -292,7 +294,7 @@ namespace Lab3
                 {
                     if (e.Button == MouseButtons.Left)
                     {
-                        FindDot(e.Location);
+                       FindDot(e.Location);
                     }
                 }
 
