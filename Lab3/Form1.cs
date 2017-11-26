@@ -130,7 +130,7 @@ namespace Lab3
         /// Возвращает выделенную в данный момент связь типа Connection
         /// </summary>
         /// <returns></returns>
-        public Connection GiveSelectedItem()
+        public Connection GiveSelectedItem() //Макс переделать должен был
         {
             Connection Connection = new Connection();
             int min = 0;
