@@ -11,6 +11,9 @@ namespace Lab3
         public double flow;
         public int maxWay;
         public int minWay;
+        public Dot first;
+        public Dot second;
+
         /// <summary>
         /// Конструктор от макс и мин пути, и от потока (все рандомные значения)
         /// </summary>

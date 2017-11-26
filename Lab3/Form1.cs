@@ -21,7 +21,11 @@ namespace Lab3
         List<Dot> DotsList = new List<Dot>();
         List<Connection> ConnectionsList = new List<Connection>();
         int size = 200; //Брать из файла настроек
-        Dot Dot;
+        Dot Dot1;
+        Dot Dot2;
+        Bitmap image = new Bitmap(480, 480);
+        Connection connection;
+
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -30,7 +34,6 @@ namespace Lab3
         {
             Random coord = new Random();
             Random speed = new Random();
-            SolidBrush brush = new SolidBrush(Color.Blue);
             for (int i = 0; i < 10; i++)
             {
                 bool check = true;
@@ -54,11 +57,6 @@ namespace Lab3
                     else
                         i--;
                 }
-            }
-
-            foreach (var point in DotsList) //Заполняем PictureBox
-            {
-                pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
         }
 
@@ -148,7 +146,6 @@ namespace Lab3
             catch
             {
                 return null;
-                //MessageBox.Show("Пожалуйста, выберите связь, которую хотите провести!");
             }
             foreach (var conect in ConnectionsList)
             {
@@ -159,47 +156,129 @@ namespace Lab3
             return Connection;
         }
 
+        
+
+        /// <summary>
+        /// Заполняем PictureBox
+        /// </summary>
+        /// <returns></returns>
+        public void FillPicBox()
+        {
+            SolidBrush brush = new SolidBrush(Color.Blue);
+            SolidBrush wbrush = new SolidBrush(Color.White);
+            Graphics imageGraphics = Graphics.FromImage(image);
+            imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
+            foreach (var point in DotsList)
+            {
+                imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+            }
+            pictureBox.Image = image;
+        }
+
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots();
+            FillPicBox();
             FillListView();
         }
 
-        Color pixelColorM;
+        Color pixelColor;
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-           pixelColorM = GetColorAt(e.Location);
+            FillPicBox();
+            if (Dot1 != null)
+            {
+
+                pixelColor = GetColorAt(e.Location);
+                if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
+                {
+                    Pen pen = new Pen(Color.Yellow);
+
+                    double way = Math.Sqrt(Math.Abs(e.Location.X - Dot1.x)) + Math.Sqrt(Math.Abs(e.Location.Y - Dot2.y));
+                    if (way >= connection.minWay && way <= connection.maxWay)
+                    {
+                        pen.Color = Color.Yellow;
+                    }
+                    else
+                    {
+                        pen.Color = Color.Red;
+                    }
+                    Bitmap line = null;
+                    line = image;
+                    Graphics lineGraphics = null;
+                    lineGraphics = Graphics.FromImage(line);
+                    lineGraphics.DrawLine(pen, Dot1.x, Dot1.y+10, e.Location.X, e.Location.Y);
+                    pictureBox.Image = line;
+                }
+                else
+                {
+                    FindDot(e.Location);
+                    Bitmap line = null;
+                    line = image;
+                    Graphics lineGraphics = null;
+                    lineGraphics = Graphics.FromImage(line);
+                    Pen pen = new Pen(Color.LightGreen);
+                    lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+                    pictureBox.Image = line;
+                }
+
+
+            }
         }
 
         private Color GetColorAt(Point point)
         {
-            Bitmap b = new Bitmap(pictureBox.ClientSize.Width, pictureBox.Height);
-            pictureBox.DrawToBitmap(b, pictureBox.ClientRectangle);
-            Color colour = b.GetPixel(point.X, point.Y);
-            b.Dispose();
+            Color colour = image.GetPixel(point.X, point.Y);
             return colour;
-            //return ((Bitmap)pictureBox.Image).GetPixel(point.X, point.Y);
         }
 
-        Color pixelColorC;
+        public void FindDot(Point point)
+        {
+            foreach (var dot in DotsList)
+            {
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 5)
+                {
+                    if (Dot1 == null)
+                    {
+                        Dot1 = dot;
+                    }
+                    else
+                    {
+                        Dot2 = dot;
+                    }
+                }
+
+            }
+        }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (GiveSelectedItem() != null)
+            if (Dot1 != null)
             {
-                if (e.Button == MouseButtons.Left)
-                    pixelColorC = GetColorAt(e.Location);
-            }
-            if (pixelColorC == Color.Blue)
-            {
-                foreach(var dot in DotsList)
+                connection.first = Dot1;
+                FindDot(e.Location);
+                connection.second = Dot2;
+                Dot1 = null;
+                for (int i = 0; i < ConnectionsList.Count; i++)
                 {
-                    if (Math.Sqrt(Math.Abs(e.Location.X - dot.x)) + Math.Sqrt(Math.Abs(e.Location.Y - dot.y)) <= 5)
+                    if (connection == ConnectionsList[i])
                     {
-                        Dot = dot;
+                        ConnectionsList[i] = connection;
                     }
                 }
+            }
+            connection = GiveSelectedItem();
+            if (Dot1 == null)
+            {
+                if (connection.maxWay != 0)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        FindDot(e.Location);
+                    }
+                }
+
             }
         }
     }
