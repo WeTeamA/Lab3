@@ -35,6 +35,7 @@ namespace Lab3
         {
             Random coord = new Random();
             Random speed = new Random();
+            SolidBrush brush = new SolidBrush(Color.Blue);
             int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
             if (DotsList.Count == 0)
             { 
@@ -58,7 +59,11 @@ namespace Lab3
                 else
                     i--;
             }
-            FillPicBox();
+
+            foreach (var point in DotsList) //Выводим на PictureBox
+            {
+                pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+            }
         }
 
         /// <summary>
@@ -163,7 +168,7 @@ namespace Lab3
         /// Заполняет PictureBox точками из DotsList
         /// </summary>
         /// <returns></returns>
-        public void FillPicBox()
+        public void DrawingConnections()
         {
             SolidBrush brush = new SolidBrush(Color.Blue);
             SolidBrush wbrush = new SolidBrush(Color.White);
@@ -179,7 +184,7 @@ namespace Lab3
         private void button_start_Click(object sender, EventArgs e)
         {
             SetDots(10);
-            FillPicBox();
+            DrawingConnections();
             FillListView();
         }
 
@@ -187,7 +192,7 @@ namespace Lab3
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            FillPicBox();
+            DrawingConnections();
             if (Dot1 != null)
             {
 
