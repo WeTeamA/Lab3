@@ -66,7 +66,6 @@ namespace Lab3
                 else
                     i--;
             }
-
             FillPictureBox();
         }
 
@@ -133,8 +132,7 @@ namespace Lab3
                 c.SubItems.Add(conect.maxWay.ToString());
                 c.SubItems.Add(conect.flow.ToString());
                 listView.Items.Add(c);
-            }
-                
+            }                
         }
 
         /// <summary>
@@ -162,7 +160,6 @@ namespace Lab3
                 if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
                     Connection = conect;
             }
-            //listView.SelectedItems.Clear(); Из-за этой строчки и снимались выделения
             return Connection;
         }
 
