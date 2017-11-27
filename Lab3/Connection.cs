@@ -8,11 +8,13 @@ namespace Lab3
 {
     public class Connection
     {
-        public double flow;
         public int maxWay;
         public int minWay;
+
         public Dot first;
         public Dot second;
+        public double flow;
+        public double currentWay;
 
         /// <summary>
         /// Конструктор от макс и мин пути, и от потока (все рандомные значения)

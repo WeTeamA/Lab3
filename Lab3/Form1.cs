@@ -297,6 +297,7 @@ namespace Lab3
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
                 CleanListView(GiveSelectedItem());
+
             }
             else
             {
