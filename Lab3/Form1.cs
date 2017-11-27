@@ -67,10 +67,7 @@ namespace Lab3
                     i--;
             }
 
-            foreach (var point in DotsList) //Выводим на PictureBox
-            {
-                pictureBox.CreateGraphics().FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
-            }
+            FillPictureBox();
         }
 
         /// <summary>
@@ -175,7 +172,7 @@ namespace Lab3
         /// Отрисовывает связи
         /// </summary>
         /// <returns></returns>
-        public void DrawingConnections()
+        public void FillPictureBox()
         {
             SolidBrush brush = new SolidBrush(Color.Blue);
             SolidBrush wbrush = new SolidBrush(Color.White);
@@ -202,7 +199,7 @@ namespace Lab3
         {
             if (Dot1 != null)
             {
-                DrawingConnections();
+                FillPictureBox();
                 pixelColor = GetColorAt(e.Location);
                 if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
                 {
@@ -292,11 +289,6 @@ namespace Lab3
                     listView.Items[i].Selected = true;
             foreach (ListViewItem items in listView.SelectedItems)
                 listView.Items.Remove(items);
-        }
-
-        public void SetConnection() //Переименовать и записать метод макса по отрисовке связи
-        {
-
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
