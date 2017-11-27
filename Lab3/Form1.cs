@@ -77,29 +77,20 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Создаем связи или добавляесм одну
+        /// Создаем n связей
         /// </summary>
-        public void SetConnections()
+        public void SetConnections(int count)
         {
             Random random = new Random();
-            if (ConnectionsList.Count == 0)                 // Если связей нет, то делаем 10 связей
+            for (int i = 0; i < count; i++)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    int max = random.Next(20, 474);
-                    int min = random.Next(20, max);
-                    double flow = random.Next(10, 100);
-                    ConnectionsList.Add(new Connection(max, min, flow));
-                }
-            }
-            else                                            // Если уже есть связи, то добавляем только одну, т.к в проге надо будет использовать 
-            {                                               // одну связь, то есть одну удалять.
-                    int max = random.Next(20, 474);        
-                    int min = random.Next(20, max);
-                    double flow = random.Next(10, 100);
-                    ConnectionsList.Add(new Connection(max, min, flow));
-            }
+                int max = random.Next(20, 474);
+                int min = random.Next(20, max);
+                double flow = random.Next(10, 100);
+                ConnectionsList.Add(new Connection(max, min, flow));
+            }  
         }
+
 
         /// <summary>
         /// Рассчет суммы максимальных потоков всех связей
@@ -315,7 +306,7 @@ namespace Lab3
             button_start.Enabled = false;
             button_start.Text = "Идет игра...";
             SetDots(10);
-            SetConnections();
+            SetConnections(10);
             RefreshListView();
         }
     }
