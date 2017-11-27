@@ -166,7 +166,7 @@ namespace Lab3
         
 
         /// <summary>
-        /// Отрисовывает связи
+        /// Рисует игровую картинку (связи и точки)
         /// </summary>
         /// <returns></returns>
         public void FillPictureBox()
