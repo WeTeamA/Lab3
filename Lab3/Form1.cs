@@ -295,7 +295,7 @@ namespace Lab3
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
                 UsedConnections.Add(GiveSelectedItem());
-                //Сюда Лехин метод удаления из ConnectionsList
+                ConnectionsList.Remove(GiveSelectedItem());
                 RefreshListView();
             }
             else
