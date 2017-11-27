@@ -19,7 +19,14 @@ namespace Lab3
             InitializeComponent();
         }
         List<Dot> DotsList = new List<Dot>();
+        /// <summary>
+        /// Не использованные связи
+        /// </summary>
         List<Connection> ConnectionsList = new List<Connection>();
+        /// <summary>
+        /// Использованные связи
+        /// </summary>
+        List<Connection> UsedConnections = new List<Connection>();
         int size = 200; //Брать из файла настроек
         /// <summary>
         /// Поле, хранящее в себе первую соединяемую точку
@@ -121,11 +128,10 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Заполняет ListView связями (используется 1 раз)
+        /// Заполняет ListView связями из массива ConnectionsList
         /// </summary>
-        public void FillListView()
+        public void RefreshListView()
         {
-            SetConnections();
             foreach (var conect in ConnectionsList)
             {
                 ListViewItem c = new ListViewItem(conect.minWay.ToString());
@@ -180,14 +186,6 @@ namespace Lab3
                 imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
             pictureBox.Image = image;
-        }
-
-        private void button_start_Click(object sender, EventArgs e)
-        {
-            button_start.Enabled = false;
-            button_start.Text = "Идет игра...";
-            SetDots(10);
-            FillListView();
         }
 
         Color pixelColor;
@@ -276,7 +274,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Находит в listView аналогию указанной связи и удаляет ее оттуда
+        /// Находит в listView аналогию указанной связи и удаляет ее оттуда (Убрать, не нужно, с использованием не использованных связей)
         /// </summary>
         /// <param name="Connection"></param>
         public void CleanListView(Connection Connection)
@@ -296,8 +294,9 @@ namespace Lab3
                 GiveSelectedItem().second = Dot2;
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
-                CleanListView(GiveSelectedItem());
-
+                UsedConnections.Add(GiveSelectedItem());
+                //Сюда Лехин метод удаления из ConnectionsList
+                RefreshListView();
             }
             else
             {
@@ -309,6 +308,15 @@ namespace Lab3
                     }
                 }
             }
+        }
+
+        private void button_start_Click(object sender, EventArgs e)
+        {
+            button_start.Enabled = false;
+            button_start.Text = "Идет игра...";
+            SetDots(10);
+            SetConnections();
+            RefreshListView();
         }
     }
 }
