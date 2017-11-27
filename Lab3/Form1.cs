@@ -77,7 +77,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Создаем n связей
+        /// Создаем n новых связей в listView
         /// </summary>
         public void SetConnections(int count)
         {
