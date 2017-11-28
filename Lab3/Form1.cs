@@ -265,19 +265,6 @@ namespace Lab3
             }
         }
 
-        /// <summary>
-        /// Находит в listView аналогию указанной связи и удаляет ее оттуда (Убрать, не нужно, с использованием не использованных связей)
-        /// </summary>
-        /// <param name="Connection"></param>
-        public void CleanListView(Connection Connection)
-        {
-            for (int i = 0; i < listView.Items.Count; i++)
-                if (Connection.minWay == Convert.ToInt32(listView.Items[i].SubItems[0].Text) && Connection.maxWay == Convert.ToInt32(listView.Items[i].SubItems[1].Text) && Connection.flow == Convert.ToInt32(listView.Items[i].SubItems[2].Text)) 
-                    listView.Items[i].Selected = true;
-            foreach (ListViewItem items in listView.SelectedItems)
-                listView.Items.Remove(items);
-        }
-
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
@@ -286,8 +273,9 @@ namespace Lab3
                 GiveSelectedItem().second = Dot2;
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
-                UsedConnections.Add(GiveSelectedItem());
                 ConnectionsList.Remove(GiveSelectedItem());
+                UsedConnections.Add(GiveSelectedItem());
+                UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
                 SetConnections(1);
                 RefreshListView();
             }

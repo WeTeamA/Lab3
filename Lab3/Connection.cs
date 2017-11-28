@@ -33,5 +33,13 @@ namespace Lab3
         {
 
         }
+
+        /// <summary>
+        /// Устанавливает длину связи
+        /// </summary>
+        public void SetCurrentWay()
+        {
+             this.currentWay = Math.Sqrt(Math.Pow(this.first.x - this.second.x, 2) + Math.Pow(this.first.y - this.second.y, 2));
+        }
     }
 }
