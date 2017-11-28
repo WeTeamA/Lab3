@@ -269,13 +269,13 @@ namespace Lab3
         {
             if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
             {
-                GiveSelectedItem().first = Dot1; //Этим действием и в связь из оригинального массива добавляются точки Dot1 и Dot2 (видимо ссылается)
+                GiveSelectedItem().first = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
                 GiveSelectedItem().second = Dot2;
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
-                ConnectionsList.Remove(GiveSelectedItem());
                 UsedConnections.Add(GiveSelectedItem());
                 UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
+                ConnectionsList.Remove(GiveSelectedItem());
                 SetConnections(1);
                 RefreshListView();
             }
