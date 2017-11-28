@@ -156,7 +156,7 @@ namespace Lab3
             foreach (var conect in ConnectionsList)
             {
                 if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
-                    Connection = conect;
+                    Connection = conect; //Вот тут Connection ссылается на connect. Поэтому когда мы что-то изменяем в Connection (то есть в GiveSelectedItem()), оно меняется и в массиве ConnectionsList
             }
             return Connection;
         }
