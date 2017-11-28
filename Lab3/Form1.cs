@@ -123,6 +123,7 @@ namespace Lab3
         /// </summary>
         public void RefreshListView()
         {
+            listView.Items.Clear();
             foreach (var conect in ConnectionsList)
             {
                 ListViewItem c = new ListViewItem(conect.minWay.ToString());
@@ -287,6 +288,7 @@ namespace Lab3
                 Dot2 = null; //Cбрасываем выделение второй точки
                 UsedConnections.Add(GiveSelectedItem());
                 ConnectionsList.Remove(GiveSelectedItem());
+                SetConnections(1);
                 RefreshListView();
             }
             else
