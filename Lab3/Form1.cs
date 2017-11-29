@@ -304,11 +304,11 @@ namespace Lab3
                 UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
                 ConnectionsList.Remove(GiveSelectedItem());
                 SetConnections(1);
-                //SetCurrentDotFill(UsedConnections[UsedConnections.Count - 1].firstDot);
-                //SetCurrentDotFill(UsedConnections[UsedConnections.Count - 1].secondDot);
-                SetCurrentDotSpeed(UsedConnections[UsedConnections.Count - 1].firstDot);
-                SetCurrentDotSpeed(UsedConnections[UsedConnections.Count - 1].secondDot);
-                SetCurrentFlow(UsedConnections[UsedConnections.Count - 1], UsedConnections[UsedConnections.Count - 1].firstDot, GetMaxSummFlow());
+                //SetCurrentDotFill(UsedConnections.Last().firstDot);
+                //SetCurrentDotFill(UsedConnections.Last().secondDot);
+                SetCurrentDotSpeed(UsedConnections.Last().firstDot);
+                SetCurrentDotSpeed(UsedConnections.Last().secondDot);
+                SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow());
                 RefreshListView();
             }
             else
