@@ -47,20 +47,19 @@ namespace Lab3
         /// <param name="count">Количество создаваемых точек</param>
         public void SetDots(int count)
         {
-            Random coord = new Random();
-            Random speed = new Random();
+            Random random = new Random();
             SolidBrush brush = new SolidBrush(Color.Blue);
             int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
             if (DotsList.Count == 0)
             { 
-                DotsList.Add(new Dot(coord.Next(0, 470), coord.Next(0, 470), speed.Next(0, 1 / 10 * size), size));
+                DotsList.Add(new Dot(random.Next(0, 470), random.Next(0, 470), random.Next(0, size / 10), size));
                 DotsListCount = 1;
             }
             for (int i = DotsList.Count; i < DotsListCount + count-1; i++)
             {
                 bool check = true;
-                int x = coord.Next(0, 470);
-                int y = coord.Next(0, 470);
+                int x = random.Next(0, 470);
+                int y = random.Next(0, 470);
                 for (int j = 0; j < i; j++)
                 {
                     if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
@@ -68,7 +67,7 @@ namespace Lab3
                 }
                 if (check == true)
                 {
-                    DotsList.Add(new Dot(x, y, speed.Next(0, 1 / 10 * size), size));
+                    DotsList.Add(new Dot(x, y, random.Next(0, size / 10), size));
                 }
                 else
                     i--;
@@ -83,6 +82,11 @@ namespace Lab3
         public void SetCurrentDotSpeed(Dot Dot)
         {
             Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow();
+        }
+
+        public void SetCurrentDotFill()
+        {
+            //как сумма всех потоков через связи данной точки, с учетом входящих/исходящих потоков
         }
 
         /// <summary>
@@ -136,9 +140,9 @@ namespace Lab3
         /// <param name="b"></param>
         /// <param name="Summ">Сумма максимальных потоков всех связей</param>
         /// <returns></returns>
-        public double GetFlow(Connection a, Dot b, double Summ) 
+        public void SetCurrentFlow(Connection a, Dot b, double Summ) 
         {
-            return b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+            a.currentFlow = b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
         /// <summary>
@@ -292,14 +296,19 @@ namespace Lab3
         {
             if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
             {
-                GiveSelectedItem().first = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
-                GiveSelectedItem().second = Dot2;
+                GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
+                GiveSelectedItem().secondDot = Dot2;
                 Dot1 = null; //Сбрасываем выделение первой точки
                 Dot2 = null; //Cбрасываем выделение второй точки
                 UsedConnections.Add(GiveSelectedItem());
                 UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
                 ConnectionsList.Remove(GiveSelectedItem());
                 SetConnections(1);
+                //SetCurrentDotFill(UsedConnections[UsedConnections.Count - 1].firstDot);
+                //SetCurrentDotFill(UsedConnections[UsedConnections.Count - 1].secondDot);
+                SetCurrentDotSpeed(UsedConnections[UsedConnections.Count - 1].firstDot);
+                SetCurrentDotSpeed(UsedConnections[UsedConnections.Count - 1].secondDot);
+                SetCurrentFlow(UsedConnections[UsedConnections.Count - 1], UsedConnections[UsedConnections.Count - 1].firstDot, GetMaxSummFlow());
                 RefreshListView();
             }
             else

@@ -11,8 +11,8 @@ namespace Lab3
         public int maxWay;
         public int minWay;
 
-        public Dot first;
-        public Dot second;
+        public Dot firstDot;
+        public Dot secondDot;
         public double maxFlow;
         public double currentFlow;
         public double currentWay;
@@ -40,7 +40,7 @@ namespace Lab3
         /// </summary>
         public void SetCurrentWay()
         {
-             this.currentWay = Math.Sqrt(Math.Pow(this.first.x - this.second.x, 2) + Math.Pow(this.first.y - this.second.y, 2));
+             this.currentWay = Math.Sqrt(Math.Pow(this.firstDot.x - this.secondDot.x, 2) + Math.Pow(this.firstDot.y - this.secondDot.y, 2));
         }
     }
 }
