@@ -13,7 +13,8 @@ namespace Lab3
 
         public Dot first;
         public Dot second;
-        public double flow;
+        public double maxFlow;
+        public double currentFlow;
         public double currentWay;
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace Lab3
         /// <param name="Flow"></param>
         public Connection(int Max, int Min, double Flow)
         {
-            flow = Flow;
+            maxFlow = Flow;
             maxWay = Max;
             minWay = Min;
         }

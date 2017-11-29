@@ -77,6 +77,15 @@ namespace Lab3
         }
 
         /// <summary>
+        /// Устанавливает итоговую скорость наполнения для указанной точки
+        /// </summary>
+        /// <param name="Dot"></param>
+        public void SetCurrentDotSpeed(Dot Dot)
+        {
+            Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow();
+        }
+
+        /// <summary>
         /// Создаем n новых связей в listView
         /// </summary>
         public void SetConnections(int count)
@@ -93,21 +102,35 @@ namespace Lab3
 
 
         /// <summary>
-        /// Рассчет суммы максимальных потоков всех связей
+        /// Возвращает сумму максимальных потоков для всех "использованных" связей
         /// </summary>
         /// <returns></returns>
-        public double GetSummFlow()
+        public double GetMaxSummFlow()
         {
             double Summ = 0;
-            foreach(Connection con in ConnectionsList)
+            foreach(Connection con in UsedConnections)
             {
-                Summ += con.flow;
+                Summ += con.maxFlow;
             }
             return Summ;
         }
 
         /// <summary>
-        /// Рассчет потака от точки через связь
+        /// Возвращает сумму текущих потоков для всех "использованных" связей
+        /// </summary>
+        /// <returns></returns>
+        public double GetCurrentSummFlow()
+        {
+            double Summ = 0;
+            foreach (Connection con in UsedConnections)
+            {
+                Summ += con.currentFlow;
+            }
+            return Summ;
+        }
+
+        /// <summary>
+        /// Рассчет потока от точки через связь
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -115,7 +138,7 @@ namespace Lab3
         /// <returns></returns>
         public double GetFlow(Connection a, Dot b, double Summ) 
         {
-            return b.speed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+            return b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
         /// <summary>
@@ -128,7 +151,7 @@ namespace Lab3
             {
                 ListViewItem c = new ListViewItem(conect.minWay.ToString());
                 c.SubItems.Add(conect.maxWay.ToString());
-                c.SubItems.Add(conect.flow.ToString());
+                c.SubItems.Add(conect.maxFlow.ToString());
                 listView.Items.Add(c);
             }                
         }
@@ -155,7 +178,7 @@ namespace Lab3
             }
             foreach (var conect in ConnectionsList)
             {
-                if (max == conect.maxWay || min == conect.minWay || flow == conect.flow)
+                if (max == conect.maxWay || min == conect.minWay || flow == conect.maxFlow)
                     Connection = conect; //Вот тут Connection ссылается на connect. Поэтому когда мы что-то изменяем в Connection (то есть в GiveSelectedItem()), оно меняется и в массиве ConnectionsList
             }
             return Connection;
