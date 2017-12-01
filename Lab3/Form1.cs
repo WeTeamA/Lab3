@@ -81,12 +81,19 @@ namespace Lab3
         /// <param name="Dot"></param>
         public void SetCurrentDotSpeed(Dot Dot)
         {
-            Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow();
+            Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow(Dot);
         }
 
-        public void SetCurrentDotFill()
+        public void SetCurrentDotFill(Dot dot)
         {
-            //как сумма всех потоков через связи данной точки, с учетом входящих/исходящих потоков
+            foreach (Connection connect in UsedConnections)
+            {
+                if (connect.firstDot == dot)
+                    dot.currentFill += connect.current_Flow_For_Second_Dot;
+                else if (connect.secondDot == dot)
+                    dot.currentFill += connect.current_Flow_For_First_Dot;
+            }
+            //dot.currentFill += dot.ownFill;
         }
 
         /// <summary>
@@ -123,26 +130,35 @@ namespace Lab3
         /// Возвращает сумму текущих потоков для всех "использованных" связей
         /// </summary>
         /// <returns></returns>
-        public double GetCurrentSummFlow()
+        public double GetCurrentSummFlow(Dot dot)
         {
             double Summ = 0;
             foreach (Connection con in UsedConnections)
             {
-                Summ += con.currentFlow;
+                if (con.firstDot == dot)
+                    Summ += con.current_Flow_For_Second_Dot; // Тут мб чет не так
+                else if (con.secondDot == dot)
+                    Summ += con.current_Flow_For_First_Dot;
             }
             return Summ;
         }
 
         /// <summary>
-        /// Рассчет потока от точки через связь
+        /// Рассчет потока от первой точки через связь
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <param name="Summ">Сумма максимальных потоков всех связей</param>
         /// <returns></returns>
-        public void SetCurrentFlow(Connection a, Dot b, double Summ) 
+        public void SetCurrentFlow(Connection a) 
         {
-            a.currentFlow = b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+            a.current_Flow_For_First_Dot = a.secondDot.currentSpeed - a.firstDot.currentSpeed;
+            a.current_Flow_For_Second_Dot = a.firstDot.currentSpeed - a.secondDot.currentSpeed;
+        }
+
+        public void SetCurrentFlowForSecondDot(Connection a, Dot b, double Summ)
+        {
+            a.current_Flow_For_Second_Dot = b.currentSpeed + 0.1 * (b.currentFill - b.size / 2) * a.maxWay / Summ;
         }
 
         /// <summary>
@@ -158,6 +174,30 @@ namespace Lab3
                 c.SubItems.Add(conect.maxFlow.ToString());
                 listView.Items.Add(c);
             }                
+        }
+
+        /// <summary>
+        /// Пересчитывает все потоки, скорости и заполненности для каждоый точки и связи
+        /// </summary>
+        public void RefreshAllValues()
+        {
+            foreach (Connection Connect in UsedConnections)
+            {
+                SetCurrentFlow(Connect);
+                SetCurrentDotSpeed(Connect.firstDot);
+                SetCurrentDotSpeed(Connect.secondDot);
+                //SetCurrentFlowForSecondDot(Connect, Connect.secondDot, GetMaxSummFlow());
+                SetCurrentDotFill(Connect.firstDot);
+                SetCurrentDotFill(Connect.secondDot);                
+            }
+            foreach (var dot in DotsList)
+            {
+                if (dot.currentFill > 200 || dot.currentFill < 0)
+                { 
+                    MessageBox.Show("Вы проиграли");
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -203,7 +243,7 @@ namespace Lab3
             foreach (var line in UsedConnections)
             {
                 Single width = Convert.ToSingle(line.maxFlow / 10);
-                Pen pen = SetLinePen(line.maxFlow , line.currentFlow);
+                Pen pen = SetLinePen(line.maxFlow , Math.Abs(line.current_Flow_For_First_Dot));
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
             }
             foreach (var point in DotsList)
@@ -404,9 +444,7 @@ namespace Lab3
                     SetConnections(1);
                     //SetCurrentDotFill(UsedConnections.Last().firstDot);
                     //SetCurrentDotFill(UsedConnections.Last().secondDot);
-                    SetCurrentDotSpeed(UsedConnections.Last().firstDot);
-                    SetCurrentDotSpeed(UsedConnections.Last().secondDot);
-                    SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow());
+                    RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
                 }

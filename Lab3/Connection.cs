@@ -10,13 +10,12 @@ namespace Lab3
     {
         public int maxWay;
         public int minWay;
+        public double currentWay;
         public Dot firstDot;
         public Dot secondDot;
         public double maxFlow;
-        public double currentFlow;
         public double current_Flow_For_First_Dot;
         public double current_Flow_For_Second_Dot;
-        public double currentWay;
 
         /// <summary>
         /// Конструктор от макс и мин пути, и от потока (все рандомные значения)
