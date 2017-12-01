@@ -10,7 +10,6 @@ namespace Lab3
     {
         public int maxWay;
         public int minWay;
-
         public Dot firstDot;
         public Dot secondDot;
         public double maxFlow;

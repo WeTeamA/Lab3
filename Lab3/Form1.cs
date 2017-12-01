@@ -202,7 +202,8 @@ namespace Lab3
             imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
             foreach (var line in UsedConnections)
             {
-                Pen pen = new Pen(Brushes.LightGreen, 2.0F);
+                Single width = Convert.ToSingle(line.maxFlow / 10);
+                Pen pen = SetLinePen(line.maxFlow , line.currentFlow);
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
             }
             foreach (var point in DotsList)
@@ -211,6 +212,86 @@ namespace Lab3
             }
             pictureBox.Image = image;
         }
+
+        public Pen SetLinePen(double maxFlow, double currenFlow)
+        {
+            double d = currenFlow / maxFlow;
+            float width = Convert.ToSingle(maxFlow / 10);
+            if (d <= 0.5)
+            {
+                int rMax = Color.Yellow.R;
+                int rMin = Color.LightGreen.R;
+                int gMax = Color.Yellow.G;
+                int gMin = Color.LightGreen.G;
+                int bMax = Color.Yellow.B;
+                int bMin = Color.LightGreen.B;
+                double rAverage = SetFirstAverage(rMax, rMin, d);
+                double gAverage = SetFirstAverage(gMax, gMin, d);
+                double bAverage = SetFirstAverage(bMax, bMin, d);
+                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
+                return pen;
+            }
+            else
+            {
+                int rMax = Color.Red.R;
+                int rMin = Color.Yellow.R;
+                int gMax = Color.Red.G;
+                int gMin = Color.Yellow.G;
+                int bMax = Color.Red.B;
+                int bMin = Color.Yellow.B;
+                double rAverage = SetSecondAverage(rMax, rMin, d);
+                double gAverage = SetSecondAverage(gMax, gMin, d);
+                double bAverage = SetSecondAverage(bMax, bMin, d);
+                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
+                return pen;
+            }
+        }
+
+        public double CheckAvarege(double Average)
+        {
+            if (Average > 255)
+            {
+                Average = 255;
+            }
+            if (Average < 0)
+            {
+                Average = 0;
+            }
+            return Average;
+        }
+
+        public double SetFirstAverage(int Max, int Min, double d)
+        {
+            if (Min <= Max)
+            {
+                double Average = Min + (Max - Min) * d * 2;
+                Average = CheckAvarege(Average);
+                return Average;
+            }
+            else
+            {
+                double Average = Min - (Min - Max) * d *2;
+                Average = CheckAvarege(Average);
+                return Average;
+            }
+        }
+
+        public double SetSecondAverage(int Max, int Min, double d)
+        {
+            if (Min <= Max)
+            {
+                double Average = Min + (Max - Min) * (1 - d) * 2;
+                Average = CheckAvarege(Average);
+                return Average;
+            }
+            else
+            {
+                double Average = Min - (Min - Max) * (1 - d) * 2;
+                Average = CheckAvarege(Average);
+                return Average;
+            }
+        }
+
 
         Color pixelColor;
 
@@ -248,6 +329,7 @@ namespace Lab3
         /// <returns></returns>
         public void DrawLine(Pen pen, Point point)
         {
+            Dot2 = null;
             Bitmap line = null;
             line = image;
             Graphics lineGraphics = null;
