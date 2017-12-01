@@ -136,7 +136,7 @@ namespace Lab3
             foreach (Connection con in UsedConnections)
             {
                 if (con.firstDot == dot)
-                    Summ += con.current_Flow_For_Second_Dot; // Тут мб чет не так
+                    Summ += con.current_Flow_For_Second_Dot; // Тут мб чет не так (короче flow зависит от speed,а speed от flow. При этом разница в speed'ах постоянно растет)
                 else if (con.secondDot == dot)
                     Summ += con.current_Flow_For_First_Dot;
             }
@@ -144,7 +144,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Рассчет потока от первой точки через связь
+        /// Рассчет потока между двумя точками для каждой из них
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -154,11 +154,6 @@ namespace Lab3
         {
             a.current_Flow_For_First_Dot = a.secondDot.currentSpeed - a.firstDot.currentSpeed;
             a.current_Flow_For_Second_Dot = a.firstDot.currentSpeed - a.secondDot.currentSpeed;
-        }
-
-        public void SetCurrentFlowForSecondDot(Connection a, Dot b, double Summ)
-        {
-            a.current_Flow_For_Second_Dot = b.currentSpeed + 0.1 * (b.currentFill - b.size / 2) * a.maxWay / Summ;
         }
 
         /// <summary>
