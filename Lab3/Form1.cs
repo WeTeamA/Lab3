@@ -142,7 +142,10 @@ namespace Lab3
         /// <returns></returns>
         public void SetCurrentFlow(Connection a, Dot b, double Summ) 
         {
-            a.currentFlow = b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+            if (a.current_Flow_For_First_Dot != 0)
+                a.current_Flow_For_First_Dot = b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
+            else
+                a.current_Flow_For_Second_Dot = b.ownSpeed + 0.1 * (b.fill - b.size / 2) * a.maxWay / Summ;
         }
 
         /// <summary>
@@ -324,7 +327,8 @@ namespace Lab3
                     //SetCurrentDotFill(UsedConnections.Last().secondDot);
                     SetCurrentDotSpeed(UsedConnections.Last().firstDot);
                     SetCurrentDotSpeed(UsedConnections.Last().secondDot);
-                    SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow());
+                    SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow()); //Поток для первой точки
+                    SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().secondDot, GetMaxSummFlow()); //Поток для второй точки
                     RefreshListView();
                     FillPictureBox();
                 }
