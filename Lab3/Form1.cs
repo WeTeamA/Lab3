@@ -200,6 +200,11 @@ namespace Lab3
             SolidBrush wbrush = new SolidBrush(Color.White);
             Graphics imageGraphics = Graphics.FromImage(image);
             imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
+            foreach (var line in UsedConnections)
+            {
+                Pen pen = new Pen(Brushes.LightGreen, 2.0F);
+                imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
+            }
             foreach (var point in DotsList)
             {
                 imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
@@ -215,49 +220,58 @@ namespace Lab3
             {
                 FillPictureBox();
                 pixelColor = GetColorAt(e.Location);
-                if (!Color.Blue.ToArgb().Equals(pixelColor.ToArgb()))
-                {
-                    Pen pen = new Pen(Color.Yellow);
-                    double way = Math.Sqrt(Math.Abs(e.Location.X - Dot1.x)) + Math.Sqrt(Math.Abs(e.Location.Y - Dot2.y));
-                    if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay) //Из этой строки выходит ошибка выбора элемента listView
+                double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
+                if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay) 
+                {                
+                    if (Color.Blue.ToArgb().Equals(pixelColor.ToArgb())) //Из этой строки выходит ошибка выбора элемента listView
                     {
-                        pen.Color = Color.Yellow;
+                        DrawLine(e.Location);
                     }
                     else
                     {
-                        pen.Color = Color.Red;
+                        Pen pen = new Pen(Brushes.Yellow, 2.0F);
+                        DrawLine(pen, e.Location);
                     }
-                    Bitmap line = null;
-                    line = image;
-                    Graphics lineGraphics = null;
-                    lineGraphics = Graphics.FromImage(line);
-                    lineGraphics.DrawLine(pen, Dot1.x, Dot1.y+10, e.Location.X, e.Location.Y);
-                    pictureBox.Image = line;
                 }
                 else
                 {
-                    FindDot(e.Location);
-                    Bitmap line = null;
-                    line = image;
-                    Graphics lineGraphics = null;
-                    lineGraphics = Graphics.FromImage(line);
-                    Pen pen = new Pen(Color.LightGreen);
-                    lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
-                    pictureBox.Image = line;
+                    Pen pen = new Pen(Brushes.Red, 2.0F);
+                    DrawLine(pen, e.Location);
                 }
             }
         }
 
-        /*public void DriwLine()
+        /// <summary>
+        /// Рисует линию от точки до курсора
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public void DrawLine(Pen pen, Point point)
         {
             Bitmap line = null;
             line = image;
             Graphics lineGraphics = null;
             lineGraphics = Graphics.FromImage(line);
-            Pen pen = new Pen(Color.LightGreen);
-            lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, e.Location.X, e.Location.Y);
+            lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, point.X, point.Y);
             pictureBox.Image = line;
-        }*/
+        }
+
+        /// <summary>
+        /// Рисует линию от точки до точки
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public void DrawLine(Point point)
+        {
+            FindDot(point);
+            Bitmap line = null;
+            line = image;
+            Graphics lineGraphics = null;
+            lineGraphics = Graphics.FromImage(line);
+            Pen pen = new Pen(Brushes.LightGreen, 2.0F);
+            lineGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+            pictureBox.Image = line;
+        }
 
         /// <summary>
         /// Возвращает цвет типа Color указанной точки
@@ -278,7 +292,7 @@ namespace Lab3
         {
             foreach (var dot in DotsList)
             {
-                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 5)
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
                 {
                     if (Dot1 == null)
                     {
@@ -294,22 +308,26 @@ namespace Lab3
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+            if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
             {
-                GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
-                GiveSelectedItem().secondDot = Dot2;
-                Dot1 = null; //Сбрасываем выделение первой точки
-                Dot2 = null; //Cбрасываем выделение второй точки
-                UsedConnections.Add(GiveSelectedItem());
-                UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
-                ConnectionsList.Remove(GiveSelectedItem());
-                SetConnections(1);
-                //SetCurrentDotFill(UsedConnections.Last().firstDot);
-                //SetCurrentDotFill(UsedConnections.Last().secondDot);
-                SetCurrentDotSpeed(UsedConnections.Last().firstDot);
-                SetCurrentDotSpeed(UsedConnections.Last().secondDot);
-                SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow());
-                RefreshListView();
+                if (e.Button == MouseButtons.Left)
+                {
+                    GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
+                    GiveSelectedItem().secondDot = Dot2;
+                    Dot1 = null; //Сбрасываем выделение первой точки
+                    Dot2 = null; //Cбрасываем выделение второй точки
+                    UsedConnections.Add(GiveSelectedItem());
+                    UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
+                    ConnectionsList.Remove(GiveSelectedItem());
+                    SetConnections(1);
+                    //SetCurrentDotFill(UsedConnections.Last().firstDot);
+                    //SetCurrentDotFill(UsedConnections.Last().secondDot);
+                    SetCurrentDotSpeed(UsedConnections.Last().firstDot);
+                    SetCurrentDotSpeed(UsedConnections.Last().secondDot);
+                    SetCurrentFlow(UsedConnections.Last(), UsedConnections.Last().firstDot, GetMaxSummFlow());
+                    RefreshListView();
+                    FillPictureBox();
+                }
             }
             else
             {
@@ -320,6 +338,11 @@ namespace Lab3
                         FindDot(e.Location);
                     }
                 }
+            }
+            if (e.Button == MouseButtons.Right)
+            {
+                Dot1 = null;
+                FillPictureBox();
             }
         }
 
