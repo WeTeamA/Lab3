@@ -81,19 +81,15 @@ namespace Lab3
         /// <param name="Dot"></param>
         public void SetCurrentDotSpeed(Dot Dot)
         {
-            Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow(Dot);
+          //  Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow(Dot);
         }
 
-        public void SetCurrentDotFill(Dot dot)
+        public void SetCurrentDotFill(Dot dot, Connection connect)
         {
-            foreach (Connection connect in UsedConnections)
-            {
                 if (connect.firstDot == dot)
-                    dot.currentFill += connect.current_Flow_For_Second_Dot;
+                    dot.currentFill += connect.current_Flow_For_Second_Dot - connect.current_Flow_For_First_Dot;
                 else if (connect.secondDot == dot)
-                    dot.currentFill += connect.current_Flow_For_First_Dot;
-            }
-            //dot.currentFill += dot.ownFill;
+                    dot.currentFill += connect.current_Flow_For_First_Dot - connect.current_Flow_For_Second_Dot;
         }
 
         /// <summary>
@@ -110,7 +106,6 @@ namespace Lab3
                 ConnectionsList.Add(new Connection(max, min, flow));
             }  
         }
-
 
         /// <summary>
         /// Возвращает сумму максимальных потоков для всех "использованных" связей
@@ -130,16 +125,13 @@ namespace Lab3
         /// Возвращает сумму текущих потоков для всех "использованных" связей
         /// </summary>
         /// <returns></returns>
-        public double GetCurrentSummFlow(Dot dot)
+        public double GetCurrentSummFlow(Dot dot, Connection Connect)
         {
             double Summ = 0;
-            foreach (Connection con in UsedConnections)
-            {
-                if (con.firstDot == dot)
-                    Summ += con.current_Flow_For_Second_Dot; // Тут мб чет не так (короче flow зависит от speed,а speed от flow. При этом разница в speed'ах постоянно растет)
-                else if (con.secondDot == dot)
-                    Summ += con.current_Flow_For_First_Dot;
-            }
+                if (Connect.firstDot == dot)
+                    Summ += Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot; // Тут мб чет не так (короче flow зависит от speed,а speed от flow. При этом разница в speed'ах постоянно растет)
+                else if (Connect.secondDot == dot)
+                    Summ += Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
             return Summ;
         }
 
@@ -152,8 +144,8 @@ namespace Lab3
         /// <returns></returns>
         public void SetCurrentFlow(Connection a) 
         {
-            a.current_Flow_For_First_Dot = a.secondDot.currentSpeed - a.firstDot.currentSpeed;
-            a.current_Flow_For_Second_Dot = a.firstDot.currentSpeed - a.secondDot.currentSpeed;
+            a.current_Flow_For_First_Dot = GetCurrentSummFlow(a.firstDot) + a.firstDot.ownSpeed + (a.firstDot.currentFill - a.firstDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
+            a.current_Flow_For_Second_Dot = GetCurrentSummFlow(a.secondDot) + a.secondDot.ownSpeed + (a.secondDot.currentFill - a.secondDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
         }
 
         /// <summary>
@@ -179,11 +171,11 @@ namespace Lab3
             foreach (Connection Connect in UsedConnections)
             {
                 SetCurrentFlow(Connect);
-                SetCurrentDotSpeed(Connect.firstDot);
-                SetCurrentDotSpeed(Connect.secondDot);
+                //SetCurrentDotSpeed(Connect.firstDot);
+                //SetCurrentDotSpeed(Connect.secondDot);
                 //SetCurrentFlowForSecondDot(Connect, Connect.secondDot, GetMaxSummFlow());
-                SetCurrentDotFill(Connect.firstDot);
-                SetCurrentDotFill(Connect.secondDot);                
+                SetCurrentDotFill(Connect.firstDot, Connect);
+                SetCurrentDotFill(Connect.secondDot, Connect);
             }
             foreach (var dot in DotsList)
             {
