@@ -20,6 +20,10 @@ namespace Lab3
         }
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
+        /// Учавствующие в рассчетах точки
+        /// </summary>
+        List<Dot> UsedDots = new List<Dot>();
+        /// <summary>
         /// Не использованные связи
         /// </summary>
         List<Connection> ConnectionsList = new List<Connection>();
@@ -81,7 +85,7 @@ namespace Lab3
         /// <param name="Dot"></param>
         public void SetCurrentDotSpeed(Dot Dot)
         {
-          //  Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummFlow(Dot);
+          // Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummF;
         }
 
         public void SetCurrentDotFill(Dot dot, Connection connect)
@@ -122,16 +126,19 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Возвращает сумму текущих потоков для всех "использованных" связей
+        /// Возвращает алгебраическую сумму потоков для указанной точки
         /// </summary>
         /// <returns></returns>
-        public double GetCurrentSummFlow(Dot dot, Connection Connect)
+        public double GetCurrentSummFlow(Dot dot)
         {
             double Summ = 0;
-                if (Connect.firstDot == dot)
-                    Summ += Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot; // Тут мб чет не так (короче flow зависит от speed,а speed от flow. При этом разница в speed'ах постоянно растет)
-                else if (Connect.secondDot == dot)
-                    Summ += Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+            foreach (var Connect in UsedConnections)
+            {
+                if (dot == Connect.firstDot)
+                    Summ += Connect.change_Fill_For_First_Dot;
+                else if (dot == Connect.firstDot)
+                    Summ += Connect.change_Fill_For_Second_Dot;
+            }
             return Summ;
         }
 
@@ -144,8 +151,10 @@ namespace Lab3
         /// <returns></returns>
         public void SetCurrentFlow(Connection a) 
         {
-            a.current_Flow_For_First_Dot = GetCurrentSummFlow(a.firstDot) + a.firstDot.ownSpeed + (a.firstDot.currentFill - a.firstDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
-            a.current_Flow_For_Second_Dot = GetCurrentSummFlow(a.secondDot) + a.secondDot.ownSpeed + (a.secondDot.currentFill - a.secondDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
+            a.current_Flow_For_First_Dot = a.firstDot.ownSpeed + (a.firstDot.currentFill - a.firstDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
+            a.current_Flow_For_Second_Dot = a.secondDot.ownSpeed + (a.secondDot.currentFill - a.secondDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
+            a.current_Flow_For_First_Dot += GetCurrentSummFlow(a.firstDot);
+            a.current_Flow_For_Second_Dot += GetCurrentSummFlow(a.secondDot);
         }
 
         /// <summary>
@@ -168,16 +177,48 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
-            foreach (Connection Connect in UsedConnections)
+            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки
             {
-                SetCurrentFlow(Connect);
-                //SetCurrentDotSpeed(Connect.firstDot);
-                //SetCurrentDotSpeed(Connect.secondDot);
-                //SetCurrentFlowForSecondDot(Connect, Connect.secondDot, GetMaxSummFlow());
-                SetCurrentDotFill(Connect.firstDot, Connect);
-                SetCurrentDotFill(Connect.secondDot, Connect);
+                Dot.currentSpeed = GetCurrentSummFlow(Dot) + Dot.ownSpeed;
             }
-            foreach (var dot in DotsList)
+
+            foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
+            {
+                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+            }
+
+            foreach (var Connect in UsedConnections) //Устанавливаем скорость изменения наполненности точек внутри связи
+            {
+                if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
+                {
+                    Connect.change_Fill_For_Second_Dot = -Connect.current_Flow_For_First_Dot + Connect.current_Flow_For_Second_Dot;
+                    Connect.change_Fill_For_First_Dot = -Connect.change_Fill_For_Second_Dot;
+                }
+                else if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
+                {
+                    Connect.change_Fill_For_First_Dot = -Connect.current_Flow_For_Second_Dot + Connect.current_Flow_For_First_Dot;
+                    Connect.change_Fill_For_Second_Dot = -Connect.change_Fill_For_First_Dot;
+                }
+                else
+                {
+                    Connect.change_Fill_For_First_Dot = 0;
+                    Connect.change_Fill_For_Second_Dot = 0;///хватит
+                }
+            }
+
+            foreach (var Dot in UsedDots) //Для каждой точки изменяем ее наполненность
+            {
+                foreach (var Connection in UsedConnections)
+                {
+                    if (Dot == Connection.firstDot)
+                        Dot.currentFill += Connection.change_Fill_For_First_Dot;
+                    else if (Dot == Connection.secondDot)
+                        Dot.currentFill += Connection.change_Fill_For_Second_Dot;
+                }
+            }
+            
+            foreach (var dot in UsedDots)
             {
                 if (dot.currentFill > 200 || dot.currentFill < 0)
                 { 
@@ -415,6 +456,26 @@ namespace Lab3
             }
         }
 
+        /// <summary>
+        /// Добавляет точку в список используемых точек, если таковой там еще нет (ИСПРАВИТЬ!)
+        /// </summary>
+        /// <param name="Dot"></param>
+        public void AddDotsToUsedDots(Dot Dot)
+        {
+            bool flag = true;
+            if (UsedDots.Count != 0)
+                foreach (var dot in UsedDots)
+                {
+                    if (Dot.x == dot.x && Dot.y ==dot.y)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+            if (flag)
+                UsedDots.Add(Dot);
+        }
+
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
@@ -423,14 +484,14 @@ namespace Lab3
                 {
                     GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
                     GiveSelectedItem().secondDot = Dot2;
+                    AddDotsToUsedDots(Dot1);
+                    AddDotsToUsedDots(Dot2);
                     Dot1 = null; //Сбрасываем выделение первой точки
                     Dot2 = null; //Cбрасываем выделение второй точки
                     UsedConnections.Add(GiveSelectedItem());
                     UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
                     ConnectionsList.Remove(GiveSelectedItem());
                     SetConnections(1);
-                    //SetCurrentDotFill(UsedConnections.Last().firstDot);
-                    //SetCurrentDotFill(UsedConnections.Last().secondDot);
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
