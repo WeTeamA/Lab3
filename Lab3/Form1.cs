@@ -80,23 +80,6 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Устанавливает итоговую скорость наполнения для указанной точки
-        /// </summary>
-        /// <param name="Dot"></param>
-        public void SetCurrentDotSpeed(Dot Dot)
-        {
-          // Dot.currentSpeed = Dot.ownSpeed + GetCurrentSummF;
-        }
-
-        public void SetCurrentDotFill(Dot dot, Connection connect)
-        {
-                if (connect.firstDot == dot)
-                    dot.currentFill += connect.current_Flow_For_Second_Dot - connect.current_Flow_For_First_Dot;
-                else if (connect.secondDot == dot)
-                    dot.currentFill += connect.current_Flow_For_First_Dot - connect.current_Flow_For_Second_Dot;
-        }
-
-        /// <summary>
         /// Создаем n новых связей в listView
         /// </summary>
         public void SetConnections(int count)
@@ -140,21 +123,6 @@ namespace Lab3
                     Summ += Connect.change_Fill_For_Second_Dot;
             }
             return Summ;
-        }
-
-        /// <summary>
-        /// Рассчет потока между двумя точками для каждой из них
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="Summ">Сумма максимальных потоков всех связей</param>
-        /// <returns></returns>
-        public void SetCurrentFlow(Connection a) 
-        {
-            a.current_Flow_For_First_Dot = a.firstDot.ownSpeed + (a.firstDot.currentFill - a.firstDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
-            a.current_Flow_For_Second_Dot = a.secondDot.ownSpeed + (a.secondDot.currentFill - a.secondDot.size / 2) / 10 * a.maxFlow / GetMaxSummFlow();
-            a.current_Flow_For_First_Dot += GetCurrentSummFlow(a.firstDot);
-            a.current_Flow_For_Second_Dot += GetCurrentSummFlow(a.secondDot);
         }
 
         /// <summary>
