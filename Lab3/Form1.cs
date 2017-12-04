@@ -166,12 +166,12 @@ namespace Lab3
             {
                 if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
                 {
-                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                    Connect.change_Fill_For_Second_Dot = -Connect.current_Flow_For_Second_Dot + Connect.current_Flow_For_First_Dot;
                     Connect.change_Fill_For_First_Dot = -Connect.change_Fill_For_Second_Dot;
                 }
                 else if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
                 {
-                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                    Connect.change_Fill_For_First_Dot = -Connect.current_Flow_For_First_Dot + Connect.current_Flow_For_Second_Dot;
                     Connect.change_Fill_For_Second_Dot = -Connect.change_Fill_For_First_Dot;
                 }
                 else
@@ -459,6 +459,18 @@ namespace Lab3
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
+
+                    string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
+                    foreach (var dot in UsedDots)
+                    {
+                        a += Convert.ToString((int)dot.currentFill)+" ";
+                    }
+                    a +="\r\n" + "Текущая скорость наполнения для каждой из точки (Как в примере с 10 и 4): " +"\r\n";
+                    foreach (var dot in UsedDots)
+                    {
+                        a += Convert.ToString((int)dot.currentSpeed) + " ";
+                    }
+                    MessageBox.Show(a);
                 }
             }
             else
