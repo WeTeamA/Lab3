@@ -44,6 +44,7 @@ namespace Lab3
         /// Поле для отрисовки игровой картинки (нужно, т.к. поиск цвета пикселя непосредственно в PictureBox не возможен)
         /// </summary>
         Bitmap image = new Bitmap(480, 480);
+        Color pixelColor;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -126,18 +127,23 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Заполняет ListView связями из массива ConnectionsList
+        /// Добавляет точку в список используемых точек, если таковой там еще нет (ИСПРАВИТЬ!)
         /// </summary>
-        public void RefreshListView()
+        /// <param name="Dot"></param>
+        public void AddDotsToUsedDots(Dot Dot)
         {
-            listView.Items.Clear();
-            foreach (var conect in ConnectionsList)
-            {
-                ListViewItem c = new ListViewItem(conect.minWay.ToString());
-                c.SubItems.Add(conect.maxWay.ToString());
-                c.SubItems.Add(conect.maxFlow.ToString());
-                listView.Items.Add(c);
-            }                
+            bool flag = true;
+            if (UsedDots.Count != 0)
+                foreach (var dot in UsedDots)
+                {
+                    if (Dot.x == dot.x && Dot.y == dot.y)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+            if (flag)
+                UsedDots.Add(Dot);
         }
 
         /// <summary>
@@ -160,18 +166,18 @@ namespace Lab3
             {
                 if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
                 {
-                    Connect.change_Fill_For_Second_Dot = -Connect.current_Flow_For_First_Dot + Connect.current_Flow_For_Second_Dot;
+                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
                     Connect.change_Fill_For_First_Dot = -Connect.change_Fill_For_Second_Dot;
                 }
                 else if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
                 {
-                    Connect.change_Fill_For_First_Dot = -Connect.current_Flow_For_Second_Dot + Connect.current_Flow_For_First_Dot;
+                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
                     Connect.change_Fill_For_Second_Dot = -Connect.change_Fill_For_First_Dot;
                 }
                 else
                 {
                     Connect.change_Fill_For_First_Dot = 0;
-                    Connect.change_Fill_For_Second_Dot = 0;///хватит
+                    Connect.change_Fill_For_Second_Dot = 0;
                 }
             }
 
@@ -193,6 +199,21 @@ namespace Lab3
                     MessageBox.Show("Вы проиграли");
                     break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Заполняет ListView связями из массива ConnectionsList
+        /// </summary>
+        public void RefreshListView()
+        {
+            listView.Items.Clear();
+            foreach (var conect in ConnectionsList)
+            {
+                ListViewItem c = new ListViewItem(conect.minWay.ToString());
+                c.SubItems.Add(conect.maxWay.ToString());
+                c.SubItems.Add(conect.maxFlow.ToString());
+                listView.Items.Add(c);
             }
         }
 
@@ -223,8 +244,6 @@ namespace Lab3
             }
             return Connection;
         }
-
-        
 
         /// <summary>
         /// Рисует игровую картинку (связи и точки)
@@ -328,36 +347,6 @@ namespace Lab3
             }
         }
 
-
-        Color pixelColor;
-
-        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (Dot1 != null)
-            {
-                FillPictureBox();
-                pixelColor = GetColorAt(e.Location);
-                double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
-                if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay) 
-                {                
-                    if (Color.Blue.ToArgb().Equals(pixelColor.ToArgb())) //Из этой строки выходит ошибка выбора элемента listView
-                    {
-                        DrawLine(e.Location);
-                    }
-                    else
-                    {
-                        Pen pen = new Pen(Brushes.Yellow, 2.0F);
-                        DrawLine(pen, e.Location);
-                    }
-                }
-                else
-                {
-                    Pen pen = new Pen(Brushes.Red, 2.0F);
-                    DrawLine(pen, e.Location);
-                }
-            }
-        }
-
         /// <summary>
         /// Рисует линию от точки до курсора
         /// </summary>
@@ -424,24 +413,31 @@ namespace Lab3
             }
         }
 
-        /// <summary>
-        /// Добавляет точку в список используемых точек, если таковой там еще нет (ИСПРАВИТЬ!)
-        /// </summary>
-        /// <param name="Dot"></param>
-        public void AddDotsToUsedDots(Dot Dot)
+        private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            bool flag = true;
-            if (UsedDots.Count != 0)
-                foreach (var dot in UsedDots)
+            if (Dot1 != null)
+            {
+                FillPictureBox();
+                pixelColor = GetColorAt(e.Location);
+                double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
+                if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                 {
-                    if (Dot.x == dot.x && Dot.y ==dot.y)
+                    if (Color.Blue.ToArgb().Equals(pixelColor.ToArgb())) //Из этой строки выходит ошибка выбора элемента listView
                     {
-                        flag = false;
-                        break;
+                        DrawLine(e.Location);
+                    }
+                    else
+                    {
+                        Pen pen = new Pen(Brushes.Yellow, 2.0F);
+                        DrawLine(pen, e.Location);
                     }
                 }
-            if (flag)
-                UsedDots.Add(Dot);
+                else
+                {
+                    Pen pen = new Pen(Brushes.Red, 2.0F);
+                    DrawLine(pen, e.Location);
+                }
+            }
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
