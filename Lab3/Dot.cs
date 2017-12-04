@@ -22,6 +22,7 @@ namespace Lab3
             this.y = y;
             this.size = size;
             this.ownSpeed = speed;
+            this.currentSpeed= speed;
             currentFill = size / 2;
         }
     }
