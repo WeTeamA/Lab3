@@ -176,9 +176,9 @@ namespace Lab3
                 }
             }
 
-            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки
+            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
             {
-                Dot.currentSpeed += GetCurrentSummFlow(Dot);//может быть в знаке проблема
+                Dot.currentSpeed += GetCurrentSummFlow(Dot);
             }
 
             foreach (var Dot in UsedDots) //Для каждой точки изменяем ее наполненность
@@ -186,9 +186,9 @@ namespace Lab3
                 foreach (var Connection in UsedConnections)
                 {
                     if (Dot == Connection.firstDot)
-                        Dot.currentFill += Connection.firstDot.currentSpeed;
+                        Dot.currentFill += Connection.change_Fill_For_First_Dot;
                     else if (Dot == Connection.secondDot)
-                        Dot.currentFill += Connection.secondDot.currentSpeed;
+                        Dot.currentFill += Connection.change_Fill_For_Second_Dot;
                 }
             }
             

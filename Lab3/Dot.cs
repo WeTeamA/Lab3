@@ -10,7 +10,6 @@ namespace Lab3
     {
         public int x;
         public int y;
-        public double ownSpeed;
         public double currentSpeed;
         public double size;
         public double ownFill;
@@ -21,7 +20,6 @@ namespace Lab3
             this.x = x;
             this.y = y;
             this.size = size;
-            this.ownSpeed = speed;
             this.currentSpeed= speed;
             currentFill = size / 2;
         }
