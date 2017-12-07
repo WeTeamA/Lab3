@@ -15,11 +15,11 @@ namespace Lab3
         public int size;
         public int fill;
 
-        public Dot(int x, int y, int speed, int size)
+        public Dot(int x, int y, int speed)
         {
             this.x = x;
             this.y = y;
-            this.size = size;
+            this.size = Settings.Default.size;
             this.ownSpeed = speed;
             this.currentSpeed = speed;
             fill = size / 2;
