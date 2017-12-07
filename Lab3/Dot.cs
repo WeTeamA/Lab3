@@ -12,8 +12,8 @@ namespace Lab3
         public int y;
         public double ownSpeed;
         public double currentSpeed;
-        public int size;
-        public int fill;
+        public double size;
+        public double currentFill;
 
         public Dot(int x, int y, int speed)
         {
@@ -21,8 +21,11 @@ namespace Lab3
             this.y = y;
             this.size = Settings.Default.size;
             this.ownSpeed = speed;
-            this.currentSpeed = speed;
-            fill = size / 2;
+            this.currentSpeed= speed;
+            currentFill = size / 2;
         }
+        public Dot()
+        { }          
+        
     }
 }
