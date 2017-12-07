@@ -151,29 +151,48 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
-            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
+         /*   foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
             {
                 Dot.currentSpeed += GetSummCurrentFlow(Dot);
             }
+            */
 
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
             {
-                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
-                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + GetSummCurrentFlow(Connect.firstDot) + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + GetSummCurrentFlow(Connect.secondDot) + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
             }
 
             foreach (var Connect in UsedConnections) //Устанавливаем потоки для каждой точки внутри каждой связи
             {
-                if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
+                if (Connect.firstDot.currentSpeed > Connect.secondDot.currentSpeed) //Короче понять, как сделать потоки зависимыми друг от друга, но не меняющими знак
                 {
-                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
-                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                    if (Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot < Connect.maxFlow)
+                    {
+                        Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                        Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                    }
+                    else
+                    {
+                        Connect.change_Fill_For_Second_Dot = Connect.maxFlow;
+                        Connect.change_Fill_For_First_Dot = -Connect.maxFlow;
+                    }
                 }
-                if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
+
+                if (Connect.firstDot.currentSpeed < Connect.secondDot.currentSpeed)
                 {
-                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
-                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                    if (Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot < Connect.maxFlow)
+                    {
+                        Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                        Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                    }
+                    else
+                    {
+                        Connect.change_Fill_For_First_Dot = Connect.maxFlow;
+                        Connect.change_Fill_For_Second_Dot = -Connect.maxFlow;
+                    }
                 }
+
                 if (Connect.current_Flow_For_First_Dot == Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_First_Dot = 0;
