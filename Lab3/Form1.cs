@@ -151,6 +151,11 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
+            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
+            {
+                Dot.currentSpeed += GetCurrentSummFlow(Dot);
+            }
+
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
             {
                 Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
@@ -174,11 +179,6 @@ namespace Lab3
                     Connect.change_Fill_For_First_Dot = 0;
                     Connect.change_Fill_For_Second_Dot = 0;
                 }
-            }
-
-            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
-            {
-                Dot.currentSpeed += GetCurrentSummFlow(Dot);
             }
 
             foreach (var Dot in UsedDots) //Для каждой точки изменяем ее наполненность
