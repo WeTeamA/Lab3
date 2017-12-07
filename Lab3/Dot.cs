@@ -24,8 +24,5 @@ namespace Lab3
             this.currentSpeed= speed;
             currentFill = size / 2;
         }
-        public Dot()
-        { }          
-        
     }
 }
