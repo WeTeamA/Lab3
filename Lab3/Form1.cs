@@ -113,17 +113,17 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Возвращает алгебраическую сумму потоков для указанной точки
+        /// Возвращает алгебраическую сумму потоков для указанной точки без учета указанного потока (для правильного рассчета без переливания из одной в другую)
         /// </summary>
         /// <returns></returns>
-        public double GetSummCurrentFlow(Dot dot)
+        public double GetSummCurrentFlow(Dot Dot, Connection Connection)
         {
             double Summ = 0;
             foreach (var Connect in UsedConnections)
             {
-                if (dot == Connect.firstDot)
+                if (Dot == Connect.firstDot && Connect!=Connection)
                     Summ += Connect.change_Fill_For_First_Dot;
-                else if (dot == Connect.secondDot)
+                else if (Dot == Connect.secondDot && Connect!=Connection)
                     Summ += Connect.change_Fill_For_Second_Dot;
             }
             return Summ;
@@ -154,29 +154,42 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
-            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
-            {
-                Dot.currentSpeed += GetSummCurrentFlow(Dot);
-            }
-
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
             {
-                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
-                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + GetSummCurrentFlow(Connect.firstDot, Connect) + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + GetSummCurrentFlow(Connect.secondDot,Connect) + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
             }
 
             foreach (var Connect in UsedConnections) //Устанавливаем потоки для каждой точки внутри каждой связи
             {
-                if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
+                if (Connect.firstDot.currentSpeed > Connect.secondDot.currentSpeed) //Короче понять, как сделать потоки зависимыми друг от друга, но не меняющими знак
                 {
-                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
-                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                    if (Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot < Connect.maxFlow)
+                    {
+                        Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                        Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                    }
+                    else
+                    {
+                        Connect.change_Fill_For_Second_Dot = Connect.maxFlow;
+                        Connect.change_Fill_For_First_Dot = -Connect.maxFlow;
+                    }
                 }
-                if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
+
+                if (Connect.firstDot.currentSpeed < Connect.secondDot.currentSpeed)
                 {
-                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
-                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                    if (Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot < Connect.maxFlow)
+                    {
+                        Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
+                        Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
+                    }
+                    else
+                    {
+                        Connect.change_Fill_For_First_Dot = Connect.maxFlow;
+                        Connect.change_Fill_For_Second_Dot = -Connect.maxFlow;
+                    }
                 }
+
                 if (Connect.current_Flow_For_First_Dot == Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_First_Dot = 0;
@@ -550,16 +563,11 @@ namespace Lab3
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
-
+                    /*
                     string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
                     foreach (var dot in UsedDots)
                     {
                         a += Convert.ToString((int)dot.currentFill) + " ";
-                    }
-                    a += "\r\n" + "Текущая скорость наполнения для каждой из точки (Как в примере с 10 и 4): " + "\r\n";
-                    foreach (var dot in UsedDots)
-                    {
-                        a += Convert.ToString((int)dot.currentSpeed) + " ";
                     }
                     a += "\r\n" + "Текущий поток: " + "\r\n";
                     foreach (var Connect in UsedConnections)
@@ -567,6 +575,7 @@ namespace Lab3
                         a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
                     }
                     MessageBox.Show(a);
+                    */
                 }
             }
             else
