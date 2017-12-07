@@ -10,11 +10,26 @@ namespace Lab3
     {
         public int maxWay;
         public int minWay;
+        public double currentWay;
+        public double maxFlow;
         public Dot firstDot;
         public Dot secondDot;
-        public double maxFlow;
-        public double currentFlow;
-        public double currentWay;
+        /// <summary>
+        /// Изменение наполненности первой точки средствами данной связи
+        /// </summary>
+        public double change_Fill_For_First_Dot = 0;
+        /// <summary>
+        /// Изменение наполненности второй точки средствами данной связи
+        /// </summary>
+        public double change_Fill_For_Second_Dot = 0;
+        /// <summary>
+        /// Поток, исходящий из первой точки связи
+        /// </summary>
+        public double current_Flow_For_First_Dot = 0;
+        /// <summary>
+        /// Поток, исходящий из второй точки связи
+        /// </summary>
+        public double current_Flow_For_Second_Dot = 0;
 
         /// <summary>
         /// Конструктор от макс и мин пути, и от потока (все рандомные значения)

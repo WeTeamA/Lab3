@@ -10,19 +10,18 @@ namespace Lab3
     {
         public int x;
         public int y;
-        public double ownSpeed;
         public double currentSpeed;
-        public int size;
-        public int fill;
+        public double size;
+        public double ownFill;
+        public double currentFill;
 
         public Dot(int x, int y, int speed, int size)
         {
             this.x = x;
             this.y = y;
             this.size = size;
-            this.ownSpeed = speed;
-            this.currentSpeed = speed;
-            fill = size / 2;
+            this.currentSpeed= speed;
+            currentFill = size / 2;
         }
     }
 }
