@@ -113,7 +113,7 @@ namespace Lab3
         /// Возвращает алгебраическую сумму потоков для указанной точки
         /// </summary>
         /// <returns></returns>
-        public double GetCurrentSummFlow(Dot dot) //Возможна ошибка со знаками
+        public double GetSummCurrentFlow(Dot dot)
         {
             double Summ = 0;
             foreach (var Connect in UsedConnections)
@@ -151,6 +151,11 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
+            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
+            {
+                Dot.currentSpeed += GetSummCurrentFlow(Dot);
+            }
+
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
             {
                 Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
@@ -164,21 +169,16 @@ namespace Lab3
                     Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
                     Connect.change_Fill_For_First_Dot = -Connect.change_Fill_For_Second_Dot;
                 }
-                else if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
+                if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
                     Connect.change_Fill_For_Second_Dot = -Connect.change_Fill_For_First_Dot;
                 }
-                else
+                if (Connect.current_Flow_For_First_Dot == Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_First_Dot = 0;
                     Connect.change_Fill_For_Second_Dot = 0;
                 }
-            }
-
-            foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
-            {
-                Dot.currentSpeed += GetCurrentSummFlow(Dot);
             }
 
             foreach (var Dot in UsedDots) //Для каждой точки изменяем ее наполненность
@@ -191,7 +191,7 @@ namespace Lab3
                         Dot.currentFill += Connection.change_Fill_For_Second_Dot;
                 }
             }
-            
+
             foreach (var dot in UsedDots)
             {
                 if (dot.currentFill > 200 || dot.currentFill < 0)
