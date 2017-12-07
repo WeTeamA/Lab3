@@ -82,5 +82,17 @@ namespace Lab3 {
                 this["maxWay"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int countNewDot {
+            get {
+                return ((int)(this["countNewDot"]));
+            }
+            set {
+                this["countNewDot"] = value;
+            }
+        }
     }
 }

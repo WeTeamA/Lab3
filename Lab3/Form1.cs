@@ -199,9 +199,15 @@ namespace Lab3
             foreach (var dot in UsedDots)
             {
                 if (dot.currentFill >= 200 || dot.currentFill <= 0)
-                { 
-                    MessageBox.Show("Вы проиграли");
-                    break;
+                {
+                    if (MessageBox.Show("Сохранить результаты?", "Вы проиграли", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        new FormForName().Show();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -587,6 +593,19 @@ namespace Lab3
             }
         }
 
+        public double Score()
+        {
+            double score = 0;
+            foreach (var dot in DotsList)
+            {
+                score += 1 - Math.Abs(Math.Abs(2 * dot.currentFill / dot.size) - 1);
+            }
+            return score;
+        }
+
+
+
+
         private void button_start_Click(object sender, EventArgs e)
         {
             button_start.Enabled = false;
@@ -595,5 +614,7 @@ namespace Lab3
             SetConnections(10);
             RefreshListView();
         }
+
+
     }
 }
