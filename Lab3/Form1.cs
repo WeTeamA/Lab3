@@ -162,17 +162,17 @@ namespace Lab3
                 Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
             }
 
-            foreach (var Connect in UsedConnections) //Устанавливаем скорость изменения наполненности точек внутри связи
+            foreach (var Connect in UsedConnections) //Устанавливаем потоки для каждой точки внутри каждой связи
             {
                 if (Connect.current_Flow_For_First_Dot > Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
-                    Connect.change_Fill_For_First_Dot = -Connect.change_Fill_For_Second_Dot;
+                    Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
                 }
                 if (Connect.current_Flow_For_First_Dot < Connect.current_Flow_For_Second_Dot)
                 {
                     Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
-                    Connect.change_Fill_For_Second_Dot = -Connect.change_Fill_For_First_Dot;
+                    Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
                 }
                 if (Connect.current_Flow_For_First_Dot == Connect.current_Flow_For_Second_Dot)
                 {
@@ -194,7 +194,7 @@ namespace Lab3
 
             foreach (var dot in UsedDots)
             {
-                if (dot.currentFill > 200 || dot.currentFill < 0)
+                if (dot.currentFill >= 200 || dot.currentFill <= 0)
                 { 
                     MessageBox.Show("Вы проиграли");
                     break;
@@ -469,6 +469,11 @@ namespace Lab3
                     foreach (var dot in UsedDots)
                     {
                         a += Convert.ToString((int)dot.currentSpeed) + " ";
+                    }
+                    a += "\r\n" + "Текущий поток: " + "\r\n";
+                    foreach (var Connect in UsedConnections)
+                    {
+                        a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
                     }
                     MessageBox.Show(a);
                 }
