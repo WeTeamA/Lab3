@@ -44,7 +44,6 @@ namespace Lab3
         /// Поле для отрисовки игровой картинки (нужно, т.к. поиск цвета пикселя непосредственно в PictureBox не возможен)
         /// </summary>
         Bitmap image = new Bitmap(480, 480);
-        Color pixelColor;
         /// <summary>
         /// Поле, в себе наводимую точку
         /// </summary>
