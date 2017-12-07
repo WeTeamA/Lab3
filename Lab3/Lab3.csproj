@@ -60,8 +60,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SettingsDot.settings</DependentUpon>
     </Compile>
-=======
->>>>>>> parent of 38fb511... 12
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
