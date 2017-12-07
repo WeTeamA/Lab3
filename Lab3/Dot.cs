@@ -15,11 +15,19 @@ namespace Lab3
         public double size;
         public double currentFill;
 
+<<<<<<< HEAD
         public Dot(int x, int y,int speed)
         {
             this.x = x;
             this.y = y;
             this.size = SettingsDot.Default.size;
+=======
+        public Dot(int x, int y, int speed, int size)
+        {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+>>>>>>> parent of 38fb511... 12
             this.ownSpeed = speed;
             this.currentSpeed= speed;
             currentFill = size / 2;

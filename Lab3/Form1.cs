@@ -462,7 +462,7 @@ namespace Lab3
             {
                 int i = 0;
                 FillPictureBox();
-                Color pixelColor = GetColorAt(e.Location);
+                pixelColor = GetColorAt(e.Location);
                 double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
                 if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                 {
