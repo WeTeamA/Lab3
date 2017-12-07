@@ -196,18 +196,18 @@ namespace Lab3
         /// <returns></returns>
         public void FillPictureBox()
         {
-            SolidBrush brush = new SolidBrush(Color.Blue);
             SolidBrush wbrush = new SolidBrush(Color.White);
             Graphics imageGraphics = Graphics.FromImage(image);
             imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
             foreach (var line in UsedConnections)
             {
-                Single width = Convert.ToSingle(line.maxFlow / 10);
                 Pen pen = SetLinePen(line.maxFlow , line.currentFlow);
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
             }
             foreach (var point in DotsList)
             {
+                Pen pen = SetDotColor(point.fill);
+                SolidBrush brush = new SolidBrush(pen.Color);
                 imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
             pictureBox.Image = image;
@@ -239,6 +239,40 @@ namespace Lab3
                 int gMin = Color.Yellow.G;
                 int bMax = Color.Red.B;
                 int bMin = Color.Yellow.B;
+                double rAverage = SetSecondAverage(rMax, rMin, d);
+                double gAverage = SetSecondAverage(gMax, gMin, d);
+                double bAverage = SetSecondAverage(bMax, bMin, d);
+                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
+                return pen;
+            }
+        }
+
+        public Pen SetDotColor(double fill)
+        {
+            double d = fill / size;
+            float width = Convert.ToSingle(fill / 10);
+            if (d <= 0.5)
+            {
+                int rMax = Color.Purple.R;
+                int rMin = Color.Blue.R;
+                int gMax = Color.Purple.G;
+                int gMin = Color.Blue.G;
+                int bMax = Color.Purple.B;
+                int bMin = Color.Blue.B;
+                double rAverage = SetFirstAverage(rMax, rMin, d);
+                double gAverage = SetFirstAverage(gMax, gMin, d);
+                double bAverage = SetFirstAverage(bMax, bMin, d);
+                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
+                return pen;
+            }
+            else
+            {
+                int rMax = Color.Red.R;
+                int rMin = Color.Purple.R;
+                int gMax = Color.Red.G;
+                int gMin = Color.Purple.G;
+                int bMax = Color.Red.B;
+                int bMin = Color.Purple.B;
                 double rAverage = SetSecondAverage(rMax, rMin, d);
                 double gAverage = SetSecondAverage(gMax, gMin, d);
                 double bAverage = SetSecondAverage(bMax, bMin, d);
@@ -304,7 +338,7 @@ namespace Lab3
                 double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
                 if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay) 
                 {                
-                    if (Color.Blue.ToArgb().Equals(pixelColor.ToArgb())) //Из этой строки выходит ошибка выбора элемента listView
+                    if (IsDot(e.Location)) //Из этой строки выходит ошибка выбора элемента listView
                     {
                         DrawLine(e.Location);
                     }
@@ -386,6 +420,19 @@ namespace Lab3
                     }
                 }
             }
+        }
+
+        public bool IsDot(Point point)
+        {
+            bool t = false;
+            foreach (var dot in DotsList)
+            {
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+                {
+                    t = true;
+                }
+            }
+            return t;
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
