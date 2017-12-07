@@ -152,12 +152,8 @@ namespace Lab3
         public void RefreshAllValues()
         {
             foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
-            {
-<<<<<<< HEAD
-                Dot.currentSpeed += GetCurrentSummFlow(Dot);
-=======
+            { 
                 Dot.currentSpeed += GetSummCurrentFlow(Dot);
->>>>>>> Mixa
             }
 
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
