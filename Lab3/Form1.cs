@@ -201,7 +201,7 @@ namespace Lab3
                 {
                     if (MessageBox.Show("Сохранить результаты?", "Вы проиграли", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        new FormForName().Show();
+                       
                     }
                     else
                     {
@@ -461,7 +461,7 @@ namespace Lab3
             if (Dot1 != null)
             {
                 FillPictureBox();
-                pixelColor = GetColorAt(e.Location);
+                Color pixelColor = GetColorAt(e.Location);
                 double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
                 if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                 {
