@@ -542,8 +542,6 @@ namespace Lab3
             return t;
         }
 
-
-
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
@@ -563,19 +561,6 @@ namespace Lab3
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
-                    /*
-                    string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
-                    foreach (var dot in UsedDots)
-                    {
-                        a += Convert.ToString((int)dot.currentFill) + " ";
-                    }
-                    a += "\r\n" + "Текущий поток: " + "\r\n";
-                    foreach (var Connect in UsedConnections)
-                    {
-                        a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
-                    }
-                    MessageBox.Show(a);
-                    */
                 }
             }
             else
