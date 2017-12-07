@@ -44,10 +44,7 @@ namespace Lab3
         /// Поле для отрисовки игровой картинки (нужно, т.к. поиск цвета пикселя непосредственно в PictureBox не возможен)
         /// </summary>
         Bitmap image = new Bitmap(480, 480);
-        /// <summary>
-        /// Поле, в себе наводимую точку
-        /// </summary>
-        Dot Dot3;
+        Color pixelColor;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -201,7 +198,7 @@ namespace Lab3
                 {
                     if (MessageBox.Show("Сохранить результаты?", "Вы проиграли", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        new FormForName().Show();
+          
                     }
                     else
                     {
@@ -303,40 +300,6 @@ namespace Lab3
                 int gMin = Color.Yellow.G;
                 int bMax = Color.Red.B;
                 int bMin = Color.Yellow.B;
-                double rAverage = SetSecondAverage(rMax, rMin, d);
-                double gAverage = SetSecondAverage(gMax, gMin, d);
-                double bAverage = SetSecondAverage(bMax, bMin, d);
-                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
-                return pen;
-            }
-        }
-
-        public Pen SetDotColor(double fill)
-        {
-            double d = fill / size;
-            float width = Convert.ToSingle(fill / 10);
-            if (d <= 0.5)
-            {
-                int rMax = Color.Purple.R;
-                int rMin = Color.Blue.R;
-                int gMax = Color.Purple.G;
-                int gMin = Color.Blue.G;
-                int bMax = Color.Purple.B;
-                int bMin = Color.Blue.B;
-                double rAverage = SetFirstAverage(rMax, rMin, d);
-                double gAverage = SetFirstAverage(gMax, gMin, d);
-                double bAverage = SetFirstAverage(bMax, bMin, d);
-                Pen pen = new Pen(Color.FromArgb((byte)rAverage, (byte)gAverage, (byte)bAverage), width);
-                return pen;
-            }
-            else
-            {
-                int rMax = Color.Red.R;
-                int rMin = Color.Purple.R;
-                int gMax = Color.Red.G;
-                int gMin = Color.Purple.G;
-                int bMax = Color.Red.B;
-                int bMin = Color.Purple.B;
                 double rAverage = SetSecondAverage(rMax, rMin, d);
                 double gAverage = SetSecondAverage(gMax, gMin, d);
                 double bAverage = SetSecondAverage(bMax, bMin, d);
