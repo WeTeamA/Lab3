@@ -61,22 +61,22 @@ namespace Lab3
             int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
             if (DotsList.Count == 0)
             { 
-                DotsList.Add(new Dot(random.Next(0, 470), random.Next(0, 470), random.Next(0, Settings.Default.size / 10)));
+                DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay)));
                 DotsListCount = 1;
             }
             for (int i = DotsList.Count; i < DotsListCount + count-1; i++)
             {
                 bool check = true;
-                int x = random.Next(0, 470);
-                int y = random.Next(0, 470);
+                int x = random.Next(0, SettingsDot.Default.maxWay);
+                int y = random.Next(0, SettingsDot.Default.maxWay);
                 for (int j = 0; j < i; j++)
                 {
-                    if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < 20)
+                    if (Math.Abs(x - DotsList[j].x) < 20 && Math.Abs(y - DotsList[j].y) < SettingsDot.Default.minWay)
                         check = false;
                 }
                 if (check == true)
                 {
-                    DotsList.Add(new Dot(x, y, random.Next(0, Settings.Default.size / 10)));
+                    DotsList.Add(new Dot(x, y));
                 }
                 else
                     i--;
