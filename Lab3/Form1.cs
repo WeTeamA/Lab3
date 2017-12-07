@@ -61,7 +61,7 @@ namespace Lab3
             int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
             if (DotsList.Count == 0)
             { 
-                DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay)));
+                DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay), random.Next(0,SettingsDot.Default.speed)));
                 DotsListCount = 1;
             }
             for (int i = DotsList.Count; i < DotsListCount + count-1; i++)
@@ -76,7 +76,7 @@ namespace Lab3
                 }
                 if (check == true)
                 {
-                    DotsList.Add(new Dot(x, y));
+                    DotsList.Add(new Dot(x, y, random.Next(0, SettingsDot.Default.speed)));
                 }
                 else
                     i--;
