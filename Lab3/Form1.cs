@@ -45,6 +45,10 @@ namespace Lab3
         /// </summary>
         Bitmap image = new Bitmap(480, 480);
         Color pixelColor;
+        /// <summary>
+        /// Поле, в себе наводимую точку
+        /// </summary>
+        Dot Dot3;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -251,6 +255,8 @@ namespace Lab3
         /// <returns></returns>
         public void FillPictureBox()
         {
+            Font drawFont = new Font("Times New Roman", 10);
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
             SolidBrush wbrush = new SolidBrush(Color.White);
             Graphics imageGraphics = Graphics.FromImage(image);
             imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
@@ -259,10 +265,15 @@ namespace Lab3
                 Single width = Convert.ToSingle(line.maxFlow / 10);
                 Pen pen = SetLinePen(line.maxFlow , Math.Abs(line.change_Fill_For_First_Dot));
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
+                int Line = Math.Abs((int)line.change_Fill_For_First_Dot);//Число посередине связи
+                String sline = Line.ToString();
+                PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
+                imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
+
             }
             foreach (var point in DotsList)
             {
-                Pen pen = SetDotColor(point.ownFill);
+                Pen pen = SetDotColor(point.currentFill);
                 SolidBrush brush = new SolidBrush(pen.Color);
                 imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
             }
@@ -370,13 +381,13 @@ namespace Lab3
         {
             if (Min <= Max)
             {
-                double Average = Min + (Max - Min) * (1 - d) * 2;
+                double Average = Min + (Max - Min) * (d - 0.5) * 2;
                 Average = CheckAvarege(Average);
                 return Average;
             }
             else
             {
-                double Average = Min - (Min - Max) * (1 - d) * 2;
+                double Average = Min - (Min - Max) * (d - 0.5) * 2;
                 Average = CheckAvarege(Average);
                 return Average;
             }
@@ -448,16 +459,47 @@ namespace Lab3
             }
         }
 
+        public void PointedDot(Point point)
+        {
+            foreach (var dot in DotsList)
+            {
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+                {
+                    Dot3 = dot;
+                }
+            }
+        }
+
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
+            FillPictureBox();
+            Dot3 = null;
+            PointedDot(e.Location);
+            if (Dot3 != null)
+            {
+                PointF pfill = new PointF(Dot3.x + 5, Dot3.y);
+                PointF pspeed = new PointF(Dot3.x + 5, Dot3.y + 20);
+                int fill = (int)Dot3.currentFill;
+                int speed = (int)Dot3.currentSpeed;
+                String sfill = fill.ToString();
+                String sspeed = speed.ToString();
+                Font drawFont = new Font("Times New Roman", 10);
+                SolidBrush drawBrush = new SolidBrush(Color.Black);
+                Bitmap String = null;
+                String = image;
+                Graphics stringGraphics = null;
+                stringGraphics = Graphics.FromImage(String);
+                stringGraphics.DrawString(sfill, drawFont, drawBrush, pfill);
+                stringGraphics.DrawString(sspeed, drawFont, drawBrush, pspeed);
+                pictureBox.Image = String;
+            }
             if (Dot1 != null)
             {
-                FillPictureBox();
-                pixelColor = GetColorAt(e.Location);
+               // pixelColor = GetColorAt(e.Location);
                 double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
                 if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                 {
-                    if (Color.Blue.ToArgb().Equals(pixelColor.ToArgb())) //Из этой строки выходит ошибка выбора элемента listView
+                    if (IsDot(e.Location)) //Из этой строки выходит ошибка выбора элемента listView
                     {
                         DrawLine(e.Location);
                     }
@@ -487,6 +529,8 @@ namespace Lab3
             }
             return t;
         }
+
+
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
