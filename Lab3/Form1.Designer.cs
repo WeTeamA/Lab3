@@ -65,9 +65,8 @@
             this.columnHeader2,
             this.columnHeader3});
             this.listView.FullRowSelect = true;
-            this.listView.Location = new System.Drawing.Point(519, 12);
-            this.listView.MultiSelect = false;
             this.listView.Location = new System.Drawing.Point(519, 13);
+            this.listView.MultiSelect = false;
             this.listView.Name = "listView";
             this.listView.Size = new System.Drawing.Size(185, 451);
             this.listView.TabIndex = 2;
@@ -95,6 +94,7 @@
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.pictureBox);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);

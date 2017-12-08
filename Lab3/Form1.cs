@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Lab3
 
@@ -18,6 +20,12 @@ namespace Lab3
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// ссылка на текстовый документ
+        /// </summary>
+        string file_score = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/res_score.txt";
+        string file_image = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/Images";
+        double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
         /// Учавствующие в рассчетах точки
@@ -59,11 +67,11 @@ namespace Lab3
             SolidBrush brush = new SolidBrush(Color.Blue);
             int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
             if (DotsList.Count == 0)
-            { 
-                DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay), random.Next(0,SettingsDot.Default.speed)));
+            {
+                DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.speed)));
                 DotsListCount = 1;
             }
-            for (int i = DotsList.Count; i < DotsListCount + count-1; i++)
+            for (int i = DotsList.Count; i < DotsListCount + count - 1; i++)
             {
                 bool check = true;
                 int x = random.Next(0, SettingsDot.Default.maxWay);
@@ -95,7 +103,7 @@ namespace Lab3
                 int min = random.Next(20, max);
                 double flow = random.Next(10, 100);
                 ConnectionsList.Add(new Connection(max, min, flow));
-            }  
+            }
         }
 
         /// <summary>
@@ -105,7 +113,7 @@ namespace Lab3
         public double GetMaxSummFlow()
         {
             double Summ = 0;
-            foreach(Connection con in UsedConnections)
+            foreach (Connection con in UsedConnections)
             {
                 Summ += con.maxFlow;
             }
@@ -155,7 +163,7 @@ namespace Lab3
         public void RefreshAllValues()
         {
             foreach (var Dot in UsedDots) //Устанавливаем итоговую скорость наполнения для каждой точки (для следующей связи с этой точкой)
-            { 
+            {
                 Dot.currentSpeed += GetSummCurrentFlow(Dot);
             }
 
@@ -198,9 +206,21 @@ namespace Lab3
             foreach (var dot in UsedDots)
             {
                 if (dot.currentFill >= 200 || dot.currentFill <= 0)
-                { 
-                    MessageBox.Show("Вы проиграли");
-                    break;
+                {
+                    if (MessageBox.Show("Хотите сохранить результат?", "Вы проиграли!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        this.Visible = false;
+                        new Form2().Show();
+                        add_result(Math.Round(score).ToString());
+                        break;
+                    }
+                    else
+                    {
+                        this.Visible = false;
+                        new Form1().Show();
+                        break;
+                    }
+
                 }
             }
         }
@@ -262,7 +282,7 @@ namespace Lab3
             foreach (var line in UsedConnections)
             {
                 Single width = Convert.ToSingle(line.maxFlow / 10);
-                Pen pen = SetLinePen(line.maxFlow , Math.Abs(line.change_Fill_For_First_Dot));
+                Pen pen = SetLinePen(line.maxFlow, Math.Abs(line.change_Fill_For_First_Dot));
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
                 int Line = Math.Abs((int)line.change_Fill_For_First_Dot);//Число посередине связи
                 String sline = Line.ToString();
@@ -370,7 +390,7 @@ namespace Lab3
             }
             else
             {
-                double Average = Min - (Min - Max) * d *2;
+                double Average = Min - (Min - Max) * d * 2;
                 Average = CheckAvarege(Average);
                 return Average;
             }
@@ -494,7 +514,7 @@ namespace Lab3
             }
             if (Dot1 != null)
             {
-               // pixelColor = GetColorAt(e.Location);
+                // pixelColor = GetColorAt(e.Location);
                 double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
                 if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
                 {
@@ -550,7 +570,8 @@ namespace Lab3
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
-
+                    Score();
+                    /*
                     string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
                     foreach (var dot in UsedDots)
                     {
@@ -566,7 +587,10 @@ namespace Lab3
                     {
                         a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
                     }
+                    
+                    a += Math.Round(Score()).ToString();
                     MessageBox.Show(a);
+                    */
                 }
             }
             else
@@ -584,6 +608,25 @@ namespace Lab3
                 Dot1 = null;
                 FillPictureBox();
             }
+        }
+
+
+        public void add_result(string text)
+        {
+            using (StreamWriter writer = new StreamWriter(file_score, true))
+            {
+                writer.Write("     " + text+" ");
+            }
+        }
+
+        public double Score()
+        {
+            
+            foreach (var dot in DotsList)
+            {
+                score += 1 - Math.Abs(Math.Abs(2 * dot.currentFill / dot.size) - 1);
+            }
+            return score;
         }
 
         private void button_start_Click(object sender, EventArgs e)
