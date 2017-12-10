@@ -81,7 +81,6 @@ namespace Lab3
                      i--;
              }
             FillPictureBox();
-          
         }
 
         /// <summary>
@@ -156,7 +155,6 @@ namespace Lab3
                     Connect.firstDot.changeFill += Connect.secondDot.currentSpeed - Connect.firstDot.currentSpeed;// "+=" и дает нам недостоющую в формуле сумму потоков!
                     Connect.secondDot.changeFill += Connect.firstDot.currentSpeed - Connect.secondDot.currentSpeed;
                 }
-
             }
 
             foreach (var Connect in UsedConnections) //Изменяем итоговую скорость "наполнения" точки по формуле 1)
