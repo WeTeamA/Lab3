@@ -13,6 +13,7 @@ namespace Lab3
         public double ownSpeed;
         public double currentSpeed;
         public double size;
+        public double changeFill;
         public double currentFill;
 
         public Dot(int x, int y, int speed)

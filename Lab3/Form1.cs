@@ -55,6 +55,7 @@ namespace Lab3
         /// <param name="count">Количество создаваемых точек</param>
         public void SetDots(int count)
         {
+            
              Random random = new Random();
              SolidBrush brush = new SolidBrush(Color.Blue);
              int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
@@ -80,8 +81,13 @@ namespace Lab3
                  else
                      i--;
              }
-             
+            /*
+            DotsList.Add(new Dot(130, 200, 10));
+            DotsList.Add(new Dot(200, 200, 5));
+            DotsList.Add(new Dot(270, 200, 15));
+           */
             FillPictureBox();
+          
         }
 
         /// <summary>
@@ -126,9 +132,9 @@ namespace Lab3
             foreach (var Connect in UsedConnections)
             {
                 if (Dot == Connect.firstDot && Connect!=Connection)
-                    Summ += Connect.change_Fill_For_First_Dot;
+                    Summ += Connect.firstDot.changeFill;
                 else if (Dot == Connect.secondDot && Connect!=Connection)
-                    Summ += Connect.change_Fill_For_Second_Dot;
+                    Summ += Connect.secondDot.changeFill;
             }
             return Summ;
         }
@@ -144,9 +150,9 @@ namespace Lab3
             foreach (var Connect in UsedConnections)
             {
                 if (Dot == Connect.firstDot)
-                    Summ += Connect.change_Fill_For_First_Dot;
+                    Summ += Connect.firstDot.changeFill;
                 else if (Dot == Connect.secondDot)
-                    Summ += Connect.change_Fill_For_Second_Dot;
+                    Summ += Connect.secondDot.changeFill;
             }
             if (Summ != 0)
                 return Summ - Dot.ownSpeed;
@@ -181,10 +187,45 @@ namespace Lab3
         {
             UsedConnections.Reverse();
 
+            /*
+            foreach (var Connect in UsedConnections)
+            {
+                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
+                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
+            }
+            */
+            foreach (var Dot in UsedDots) //Обнуление потоков для перерасчета
+            {
+                Dot.changeFill = 0;
+            }
+
+            foreach (var Connect in UsedConnections)
+            {
+                if (Connect.firstDot.currentSpeed == Connect.secondDot.currentSpeed)
+                {
+                    Connect.firstDot.changeFill += 0;
+                    Connect.secondDot.changeFill += 0;
+                }
+                else
+                { 
+                    Connect.firstDot.changeFill += Connect.secondDot.currentSpeed - Connect.firstDot.currentSpeed;// "+=" и дает нам недостоющую в формуле сумму потоков!
+                    Connect.secondDot.changeFill += Connect.firstDot.currentSpeed - Connect.secondDot.currentSpeed;
+                }
+
+            }
+
+            foreach (var Dot in UsedDots)
+            {
+                Dot.currentFill += Dot.changeFill;
+            }
+            
+            
+            
+            /*
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
             {
-                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
-                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed;// + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed;// + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
             }
 
             foreach (var Connect in UsedConnections) //Устанавливаем потоки для каждой точки внутри каждой связи
@@ -193,15 +234,15 @@ namespace Lab3
                 {
                     if (Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot < Connect.maxFlow)
                     {
-                        Connect.firstDot.currentSpeed += GetSummCurrentFlow(Connect.firstDot, Connect);
-                        Connect.secondDot.currentSpeed += GetSummCurrentFlow(Connect.secondDot, Connect);
+                        Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
+                        Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
                         Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
                         Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
                     }
                     else
                     {
-                        Connect.firstDot.currentSpeed += GetSummCurrentFlow(Connect.firstDot, Connect);
-                        Connect.secondDot.currentSpeed += GetSummCurrentFlow(Connect.secondDot, Connect);
+                        Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
+                        Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
                         Connect.change_Fill_For_Second_Dot = Connect.maxFlow;
                         Connect.change_Fill_For_First_Dot = -Connect.maxFlow;
                     }
@@ -211,15 +252,15 @@ namespace Lab3
                 {
                     if (Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot < Connect.maxFlow)
                     {
-                        Connect.firstDot.currentSpeed += GetSummCurrentFlow(Connect.firstDot, Connect);
-                        Connect.secondDot.currentSpeed += GetSummCurrentFlow(Connect.secondDot, Connect);
+                        Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
+                        Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
                         Connect.change_Fill_For_First_Dot = Connect.current_Flow_For_Second_Dot - Connect.current_Flow_For_First_Dot;
                         Connect.change_Fill_For_Second_Dot = Connect.current_Flow_For_First_Dot - Connect.current_Flow_For_Second_Dot;
                     }
                     else
                     {
-                        Connect.firstDot.currentSpeed += GetSummCurrentFlow(Connect.firstDot, Connect);
-                        Connect.secondDot.currentSpeed += GetSummCurrentFlow(Connect.secondDot, Connect);
+                        Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
+                        Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
                         Connect.change_Fill_For_First_Dot = Connect.maxFlow;
                         Connect.change_Fill_For_Second_Dot = -Connect.maxFlow;
                     }
@@ -234,12 +275,6 @@ namespace Lab3
 
             UsedConnections.Reverse();
 
-            foreach (var Connect in UsedConnections)//Cбрасываем все скорости для последующего пересчета
-            {
-                Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed;
-                Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed;
-            }
-
             foreach (var Dot in UsedDots) //Для каждой точки изменяем ее наполненность
             {
                 foreach (var Connection in UsedConnections)
@@ -250,7 +285,9 @@ namespace Lab3
                         Dot.currentFill += Connection.change_Fill_For_Second_Dot;
                 }
             }
+            */
 
+            UsedConnections.Reverse();
             foreach (var dot in UsedDots)
             {
                 if (dot.currentFill >= 200 || dot.currentFill <= 0)
@@ -318,9 +355,9 @@ namespace Lab3
             foreach (var line in UsedConnections)
             {
                 Single width = Convert.ToSingle(line.maxFlow / 10);
-                Pen pen = SetLinePen(line.maxFlow, Math.Abs(line.change_Fill_For_First_Dot));
-                imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
-                int Line = Math.Abs((int)line.change_Fill_For_First_Dot);//Число посередине связи
+                Pen pen = SetLinePen(line.maxFlow, Math.Abs(line.firstDot.changeFill)); //Шо это?
+                imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);     
+                int Line = Math.Abs((int)(line.firstDot.changeFill != 0 ? line.firstDot.changeFill : line.secondDot.changeFill));//Число посередине связи
                 String sline = Line.ToString();
                 PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
                 imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
