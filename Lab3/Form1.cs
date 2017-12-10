@@ -185,21 +185,13 @@ namespace Lab3
         /// </summary>
         public void RefreshAllValues()
         {
-            UsedConnections.Reverse();
-
-            /*
-            foreach (var Connect in UsedConnections)
-            {
-                Connect.current_Flow_For_First_Dot = Connect.firstDot.currentSpeed + GetSummCurrentFlow(Connect.firstDot, Connect);
-                Connect.current_Flow_For_Second_Dot = Connect.secondDot.currentSpeed + GetSummCurrentFlow(Connect.secondDot, Connect);
-            }
-            */
+            UsedConnections.Reverse(); //Переворачиваем массив, чтобы начать с актуальной связи
             foreach (var Dot in UsedDots) //Обнуление потоков для перерасчета
             {
                 Dot.changeFill = 0;
             }
 
-            foreach (var Connect in UsedConnections)
+            foreach (var Connect in UsedConnections) //Рассчитываем изменения наполненностей точек
             {
                 if (Connect.firstDot.currentSpeed == Connect.secondDot.currentSpeed)
                 {
@@ -214,12 +206,16 @@ namespace Lab3
 
             }
 
-            foreach (var Dot in UsedDots)
+            foreach (var Connect in UsedConnections) //Изменяем итоговую скорость "наполнения" точки по формуле 1)
+            {
+                Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+                Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
+            }
+
+            foreach (var Dot in UsedDots) //Изменяем наполнености точек
             {
                 Dot.currentFill += Dot.changeFill;
             }
-            
-            
             
             /*
             foreach (var Connect in UsedConnections) //Устанавливаем размер исходящих потоков для каждой точки внутри связи
@@ -287,7 +283,8 @@ namespace Lab3
             }
             */
 
-            UsedConnections.Reverse();
+            UsedConnections.Reverse(); //Переворачиваем массив обратно
+
             foreach (var dot in UsedDots)
             {
                 if (dot.currentFill >= 200 || dot.currentFill <= 0)
@@ -355,9 +352,9 @@ namespace Lab3
             foreach (var line in UsedConnections)
             {
                 Single width = Convert.ToSingle(line.maxFlow / 10);
-                Pen pen = SetLinePen(line.maxFlow, Math.Abs(line.firstDot.changeFill)); //Шо это?
+                Pen pen = SetLinePen(line.maxFlow, Math.Abs((int)((line.firstDot.changeFill - line.secondDot.changeFill)) / 2)); //Шо это?
                 imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);     
-                int Line = Math.Abs((int)(line.firstDot.changeFill != 0 ? line.firstDot.changeFill : line.secondDot.changeFill));//Число посередине связи
+                int Line = Math.Abs((int)(Math.Abs(line.firstDot.currentSpeed - line.secondDot.currentSpeed)));//Число посередине связи
                 String sline = Line.ToString();
                 PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
                 imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
