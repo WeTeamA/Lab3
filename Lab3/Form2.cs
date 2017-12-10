@@ -83,5 +83,10 @@ namespace Lab3
             add_result(textBox_Name.Text);
             RefreshListBox();
         }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
