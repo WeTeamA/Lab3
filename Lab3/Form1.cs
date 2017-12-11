@@ -151,13 +151,21 @@ namespace Lab3
                     Connect.secondDot.changeFill += 0;
                 }
                 else
-                { 
-                    Connect.firstDot.changeFill += Connect.secondDot.currentSpeed - Connect.firstDot.currentSpeed;// "+=" и дает нам недостоющую в формуле сумму потоков!
-                    Connect.secondDot.changeFill += Connect.firstDot.currentSpeed - Connect.secondDot.currentSpeed;
+                {
+                    if (Math.Abs(Connect.firstDot.changeFill + Connect.secondDot.currentSpeed - Connect.firstDot.currentSpeed) < Connect.maxFlow)
+                    {
+                        Connect.firstDot.changeFill += Connect.secondDot.currentSpeed - Connect.firstDot.currentSpeed;// "+=" и дает нам недостоющую в формуле сумму потоков!
+                        Connect.secondDot.changeFill += Connect.firstDot.currentSpeed - Connect.secondDot.currentSpeed;
+                    }
+                    else
+                    {
+                        Connect.firstDot.changeFill = Connect.maxFlow;
+                        Connect.secondDot.changeFill = -Connect.maxFlow;
+                    }
                 }
             }
 
-            foreach (var Connect in UsedConnections) //Изменяем итоговую скорость "наполнения" точки по формуле 1)
+            foreach (var Connect in UsedConnections) //Изменяем итоговую скорость "наполнения" точки по формуле 1
             {
                 Connect.firstDot.currentSpeed = Connect.firstDot.ownSpeed + (Connect.firstDot.currentFill - Connect.firstDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
                 Connect.secondDot.currentSpeed = Connect.secondDot.ownSpeed + (Connect.secondDot.currentFill - Connect.secondDot.size / 2) / 10 * Connect.maxFlow / GetMaxSummFlow();
@@ -454,7 +462,7 @@ namespace Lab3
                 PointF pfill = new PointF(Dot3.x + 5, Dot3.y);
                 PointF pspeed = new PointF(Dot3.x + 5, Dot3.y + 20);
                 int fill = (int)Dot3.currentFill;
-                int speed = (int)Dot3.ownSpeed;
+                int speed = (int)Dot3.currentSpeed;
                 String sfill = fill.ToString();
                 String sspeed = speed.ToString();
                 Font drawFont = new Font("Times New Roman", 10);
@@ -549,13 +557,6 @@ namespace Lab3
             SetDots(10);
             SetConnections(10);
             RefreshListView();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            RefreshAllValues();
-            RefreshListView();
-            FillPictureBox();
         }
     }
 }
