@@ -31,7 +31,6 @@ namespace Lab3
         /// Использованные связи
         /// </summary>
         List<Connection> UsedConnections = new List<Connection>();
-        int size = 200; //Брать из файла настроек
         /// <summary>
         /// Поле, хранящее в себе первую соединяемую точку
         /// </summary>
