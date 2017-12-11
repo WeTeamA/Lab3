@@ -677,7 +677,7 @@ namespace Lab3
         {
             Random random = new Random();            
             int index = random.Next(0, UsedDots.Count - 1);
-            Dot dot1 = UsedDots[0];
+            Dot dot1 = UsedDots[index];
             List<Dot> Pased = new List<Dot>();
             List<Dot> turn = new List<Dot>();
             turn.Add(dot1);
