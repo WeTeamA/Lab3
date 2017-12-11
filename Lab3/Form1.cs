@@ -638,7 +638,7 @@ namespace Lab3
             RefreshListView();
         }
 
-        public void Fill_MiniGame_1_and_3_PicBox()
+        public void Fill_MiniGame_1_and_3_PicBox(Dot dot1, Dot dot2)
         {
             {
                 Font drawFont = new Font("Times New Roman", 10);
@@ -661,15 +661,17 @@ namespace Lab3
                 {
                     SolidBrush brush = new SolidBrush(Color.Gray);
                     imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
-                }
+                }              SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+                imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
+                imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
                 pictureBox.Image = image;
             }
         }
 
+
         private void button1_Click(object sender, EventArgs e)
         {
             Flag = true;
-            Fill_MiniGame_1_and_3_PicBox();
             obhod();
         }
 
@@ -697,8 +699,7 @@ namespace Lab3
 
                 }
             }
-            MessageBox.Show(dot1.currentFill.ToString());
-            MessageBox.Show(dot2.currentFill.ToString());
+            Fill_MiniGame_1_and_3_PicBox(dot1, dot2);
         }
 
         public void MoveList(List<Dot> turn)
