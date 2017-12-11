@@ -23,8 +23,8 @@ namespace Lab3
         /// <summary>
         /// ссылка на текстовый документ
         /// </summary>
-        string file_score = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/res_score.txt";
-        string file_image = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/Images";
+        string file_score = "../../../res_score.txt";
+        string file_image = "../../../Images";
         double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
