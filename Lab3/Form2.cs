@@ -19,6 +19,7 @@ namespace Lab3
         }
 
         string filename = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/res_score.txt";
+        string file_image = "C:/Users/lebox/Desktop/Учеба/ООП/Lab.3/Lab3/Images/";
         string[] result;
         /// <summary>
         /// добавление имени игрока в файл и в result
@@ -26,11 +27,11 @@ namespace Lab3
         /// <param name="t"></param>
         public void add_result(string t)
         {
-            result[result.Count()-1] +="                " + t;
+            result[result.Count()-1] +=t;
             Sort_Result(result);
             using (StreamWriter writer = new StreamWriter(filename, true))
                 {
-                    writer.Write("                " + t + "\r\n");
+                    writer.Write(t + "\r\n");
                 }
         }
 
@@ -46,11 +47,12 @@ namespace Lab3
         /// </summary>
         public void RefreshListBox()
         {
-            Sort_Result(result);
 
             foreach (var item in result)
             {
-                listBox_Result.Items.Add(item);
+                ListViewItem c = new ListViewItem(item.Split(' ')[1]);
+                c.SubItems.Add(Math.Round(double.Parse(item.Split(' ')[0])).ToString());
+                listBox_Result.Items.Add(c);
             }
         }
         /// <summary>
@@ -63,7 +65,7 @@ namespace Lab3
             {
                 for (int j=i+1;j<result.Count();j++)
                 {
-                    if (Int32.Parse(result[i].Split(' ')[5])< Int32.Parse(result[j].Split(' ')[5]))
+                    if (double.Parse(result[i].Split(' ')[0])< double.Parse(result[j].Split(' ')[0]))
                     {
                         string k = result[i];
                         result[i] = result[j];
@@ -76,6 +78,8 @@ namespace Lab3
 
         private void button1_Click(object sender, EventArgs e)
         {
+            listBox_Result.Enabled = true;
+            pictureBox.Enabled = true;
             textBox_Name.Enabled = false;
             label1.Enabled = false;
             button_AddResult.Enabled = false;
@@ -84,9 +88,24 @@ namespace Lab3
             RefreshListBox();
         }
 
+
+
+
         private void button1_Click_1(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void listBox_Result_MouseClick(object sender, MouseEventArgs e)
+        {
+            foreach (var item in result)
+            {
+                if (listBox_Result.SelectedItems[0].Text == item.Split(' ')[1])
+                {
+                    //File.Open(file_image + item.Split(' ')[0] + ".bmp", FileMode.Open);
+                    pictureBox.Image = new Bitmap(file_image + item.Split(' ')[0] + ".bmp", true);
+                }
+            }
         }
     }
 }

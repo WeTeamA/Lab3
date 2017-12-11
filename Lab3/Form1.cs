@@ -187,7 +187,8 @@ namespace Lab3
                     {
                         this.Visible = false;
                         new Form2().Show();
-                        add_result(Math.Round(score).ToString());
+                        add_result(score.ToString());
+                        SaveImage();
                         break;
                     }
                     else
@@ -584,6 +585,7 @@ namespace Lab3
                 Dot1 = null;
                 FillPictureBox();
             }
+            label1.Text = "Ваш счет: " + Math.Round(score);
         }
 
 
@@ -591,8 +593,13 @@ namespace Lab3
         {
             using (StreamWriter writer = new StreamWriter(file_score, true))
             {
-                writer.Write("     " + text+" ");
+                writer.Write(text+" ");
             }
+        }
+
+        public void SaveImage()
+        {
+            image.Save(@"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"+score.ToString()+".bmp", ImageFormat.Bmp);
         }
 
         public double Score()
