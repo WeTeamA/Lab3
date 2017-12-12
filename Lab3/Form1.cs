@@ -661,7 +661,8 @@ namespace Lab3
                 {
                     SolidBrush brush = new SolidBrush(Color.Gray);
                     imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
-                }              SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+                }
+                SolidBrush brush1 = new SolidBrush(Color.LightGreen);
                 imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
                 imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
                 pictureBox.Image = image;
@@ -672,14 +673,14 @@ namespace Lab3
         private void button1_Click(object sender, EventArgs e)
         {
             Flag = true;
-            obhod();
+            MinWay(obhod());
         }
 
-        public void obhod()
+        public List<Dot> obhod()
         {
             Random random = new Random();            
-            int index = random.Next(0, UsedDots.Count - 1);
-            Dot dot1 = UsedDots[index];
+            int index = random.Next(0, UsedDots.Count  - 1);
+            Dot dot1 = UsedDots[0];
             List<Dot> Pased = new List<Dot>();
             List<Dot> turn = new List<Dot>();
             turn.Add(dot1);
@@ -700,6 +701,7 @@ namespace Lab3
                 }
             }
             Fill_MiniGame_1_and_3_PicBox(dot1, dot2);
+            return Pased;
         }
 
         public void MoveList(List<Dot> turn)
@@ -739,6 +741,68 @@ namespace Lab3
             }
             Pased.Add(dot1);
             return added;
+        }
+
+        public void MinWay(List<Dot> Pased)
+        {
+            //List<double> way = new List<double>(Pased.Count); 
+            //List<bool> fix = new List<bool>(Pased.Count);
+            double[] way = new double[Pased.Count];
+            bool[] fix = new bool[Pased.Count];
+            int index = 0;
+            int index1;
+            int index2;
+            way[0] = 0;
+            fix[0] = false;
+            int min; 
+            for (int i = 1; i < Pased.Count; i++)
+            {
+                way[i] = 10000000000;
+                fix[i] = false;
+            }
+            Dot dot;
+            for (int i = Pased.Count ; i > 0; i--)
+            {
+                min = 10000000;
+                for (int j = 0; j < way.Count() ; j++)
+                {
+                    if (way[j] < min && !fix[j])
+                    {
+                        index = j;
+                    }
+                }
+                fix[index] = true;
+                dot = Pased[index];
+                foreach (Connection link in UsedConnections)
+                {
+                    if (link.firstDot == dot)
+                    {
+                        index1 = Pased.IndexOf(link.firstDot);
+                        index2 = Pased.IndexOf(link.secondDot);
+                        if (way[index2] > link.currentWay + way[index1])
+                        {
+                            way[index2] = link.currentWay + way[index1];
+                        }
+                    }
+                    if (link.secondDot == dot)
+                    {
+                        index1 = Pased.IndexOf(link.firstDot);
+                        index2 = Pased.IndexOf(link.secondDot);
+                        if (way[index1] > link.currentWay + way[index2])
+                        {
+                            way[index1] = link.currentWay + way[index2];
+                        }
+                    }
+                }
+            }
+            for (int m = 0; m < way.Length ; m++)
+            {
+                Graphics imageGraphics = Graphics.FromImage(image);
+                SolidBrush brush1 = new SolidBrush(Color.Red);
+                imageGraphics.FillEllipse(brush1, Pased[m].x - 5, Pased[m].y + 5, 10, 10);
+                pictureBox.Image = image;
+                MessageBox.Show(way[m].ToString());
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
