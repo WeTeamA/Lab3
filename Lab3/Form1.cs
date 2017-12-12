@@ -118,17 +118,7 @@ namespace Lab3
         /// <param name="Dot"></param>
         public void AddDotsToUsedDots(Dot Dot)
         {
-            bool flag = true;
-            if (UsedDots.Count != 0)
-                foreach (var dot in UsedDots)
-                {
-                    if (Dot.x == dot.x && Dot.y == dot.y)
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-            if (flag)
+            if (IsRepeat(Dot, UsedDots) == false)
                 UsedDots.Add(Dot);
         }
 
@@ -229,6 +219,174 @@ namespace Lab3
                     Connection = conect; //Вот тут Connection ссылается на connect. Поэтому когда мы что-то изменяем в Connection (то есть в GiveSelectedItem()), оно меняется и в массиве ConnectionsList
             }
             return Connection;
+        }
+
+        /// <summary>
+        /// Заполняет указанный массив пятью рандомными точками массива ListDots
+        /// </summary>
+        /// <param name="DotsForGame"></param>
+        public void SetDotsForGame(List<Dot> DotsForGame)
+        {
+            Random random = new Random();
+            while (DotsForGame.Count != 5)
+            {
+                Dot check = DotsList[random.Next(0, 9)];
+                if (IsRepeat(check, DotsForGame) == false)
+                    DotsForGame.Add(check);
+            }
+        }
+
+        /// <summary>
+        /// Возвращает факториал указанного числа
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int Factorial(int value)
+        {
+            int res = 1;
+            for (int i = value; i > 1; i--)
+                res *= i;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает путь между двумя указанными точками
+        /// </summary>
+        /// <param name="Dot1"></param>
+        /// <param name="Dot2"></param>
+        /// <returns></returns>
+        public double WayBetweenDots(Dot Dot1, Dot Dot2)
+        {
+            double Way = 0;
+            Way = Math.Sqrt(Math.Pow(Dot1.x - Dot2.x, 2) + Math.Pow(Dot1.y - Dot2.y, 2));
+            return Way;
+        }
+
+        /// <summary>
+        /// Возвращает true если указанный элемент уже есть в указанном массиве
+        /// </summary>
+        /// <param name="Item"></param>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        public bool IsRepeat(Dot Item, List<Dot> Array)
+        {
+            bool flag = false;
+            for (int i = 0; i < Array.Count; i++)
+            {
+                if (Array[i] == Item)
+                    flag = true;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// Возвращает true если указанный элемент уже есть в указанном массиве
+        /// </summary>
+        /// <param name="Item"></param>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        public bool IsRepeat(List<Dot> Item, List<List<Dot>> Array)
+        {
+            bool flag = false;
+            for (int i = 0; i < Array.Count; i++)
+            {
+                if (Array[i] == Item)
+                    flag = true;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// Возвращает true если указанный элемент уже есть в указанном массиве
+        /// </summary>
+        /// <param name="Item"></param>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        public bool IsRepeat(char Item, List<char> Array)
+        {
+            bool flag = false;
+            for (int i = 0; i < Array.Count(); i++)
+            {
+                if (Array[i] == Item)
+                    flag = true;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// Возвращает true если в указанном массиве есть повторяющиеся элементы
+        /// </summary>
+        /// <param name="Item"></param>
+        /// <param name="Array"></param>
+        /// <returns></returns>
+        public bool IsRepeat(List<char> Array)
+        {
+            bool flag = false;
+            for (int i = 0; i < Array.Count(); i++)
+            {
+                for (int j = i+1; j<Array.Count(); j++)
+                if (Array[i] == Array[j])
+                    flag = true;
+            }
+            return flag;
+        }
+
+        /// <summary>
+        /// Возвращает суммарную длину пути между всеми точками в указанном массиве (Включая соединение первой и последней точки, чтобы получился замкнутый контур)
+        /// </summary>
+        /// <returns></returns>
+        public double GetSummWay(List<Dot> Solution)
+        {
+            double Summ = 0;
+            for (int i = 0; i < 5; i++)
+            try
+            { 
+                Summ += WayBetweenDots(Solution[i], Solution[i + 1]);
+            }
+            catch
+            {
+                Summ += WayBetweenDots(Solution[0], Solution[4]);
+            }
+                return Summ;
+        }
+
+        /// <summary>
+        /// Возвращает true, если указанная длина пути равна минимальной для указанного массива из пяти точек (в порядке их выбирания пользователем)
+        /// </summary>
+        /// <param name="Solution"></param>
+        /// <returns></returns>
+        public bool CheckThirdGame(int Solution, List<Dot> DotsForGame)
+        {
+            bool check = false;
+            List<List<Dot>> Solutions = new List<List<Dot>>();
+            List<char> CharArray = new List<char>();
+            List<double> Lengths = new List<double>();
+            for (int i = 01234; i <= 43210; i++)
+            {
+                string SeriesDots = Convert.ToString(i);
+                if (SeriesDots.Count() == 4)
+                {
+                    CharArray.Add('0');
+                    CharArray.AddRange(SeriesDots);
+                }
+                else
+                    CharArray.AddRange(SeriesDots); //Заполняем массив char (теперь можем изменять элементы по индексу)
+    
+                if (IsRepeat('5', CharArray) == false && IsRepeat('6', CharArray) == false && IsRepeat('7', CharArray) == false && IsRepeat('8', CharArray) == false && IsRepeat('9', CharArray) == false)
+                if (IsRepeat(CharArray) == false)
+                {
+                    if (IsRepeat(new List<Dot>() { DotsForGame[CharArray[0] - 48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48] }, Solutions) == false)
+                        Solutions.Add(new List<Dot>() {DotsForGame[CharArray[0]-48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48]}); 
+                }
+                CharArray.Clear();
+            }
+            for (int i = 0; i < Solutions.Count; i++)
+            {
+                Lengths.Add(GetSummWay(Solutions[i]));
+            }
+            if (Solution == Lengths.Min())
+                check = true;
+            return check;
         }
 
         /// <summary>
