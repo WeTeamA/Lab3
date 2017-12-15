@@ -599,7 +599,7 @@ namespace Lab3
             {
                 if (Dot2 != null ) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                 {
-                    if (e.Button == MouseButtons.Left)
+                    if (e.Button == MouseButtons.Left && Areconnected())
                     {
                         Graphics imageGraphics = Graphics.FromImage(image);
                         SolidBrush brush1 = new SolidBrush(Color.Red);
@@ -641,6 +641,51 @@ namespace Lab3
                 }
             }
 
+        }
+
+        public bool Areconnected()
+        {
+            bool t = false;
+            foreach (Connection link in UsedConnections)
+            {
+                if (link.firstDot == Dot1 && link.firstDot == Dot2)
+                {
+                    t = true;
+                }
+                if (link.secondDot == Dot2 && link.firstDot == Dot1)
+                {
+                    t = true;
+                }
+            }
+            return t;
+        }
+
+        public bool IsUsedDots()
+        {
+            bool t = false;
+            foreach (Dot dot in UsedDots)
+            {
+                if ()
+                {
+                    t = true;
+                }
+
+            }
+        }
+
+        public void calc()
+        {
+            int n = 5;
+            int[] arr = new int[5];
+            int m = 0;
+            int k = 1;
+            for (int i = 1; i <+ n; i++)
+            {
+                arr[i] = m;
+                m++;
+                k = k * i;
+            }
+            for 
         }
 
         public void DrawRec(Dot dot)
@@ -796,7 +841,6 @@ namespace Lab3
                 {
                     turn.Add(link.firstDot);
                     added = true;
-
                 }
             }
             Pased.Add(dot1);
