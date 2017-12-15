@@ -50,9 +50,9 @@ namespace Lab3
         /// </summary>
         Dot Dot3;
         /// <summary>
-        /// Флажок, показывающий идет обычная или мини игра
+        /// Значение, показывающее какая игра происходит
         /// </summary>
-        bool Flag = false;
+        int GameC = 0;
         /// <summary>
         /// Первая точка мини игр 1 и 2
         /// </summary>
@@ -65,6 +65,10 @@ namespace Lab3
         /// Текущий путь игрока в 1-й мини игре
         /// </summary>
         double CurrWay;
+        /// <summary>
+        /// Минимальный путь
+        /// </summary>
+        double MinWayMini;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -488,6 +492,13 @@ namespace Lab3
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
+            switch(GameC)
+            {
+                case 0:
+                    
+
+                    
+            }
             if (!Flag)
             {
                 FillPictureBox();
@@ -597,15 +608,18 @@ namespace Lab3
             }
             else
             {
-                if (Dot2 != null ) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+                if (Dot1 != null ) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                 {
-                    if (e.Button == MouseButtons.Left && Areconnected())
+                    FindDot(e.Location);
+                    if (e.Button == MouseButtons.Left && Areconnected() && IsUsedDots(Dot2))
                     {
                         Graphics imageGraphics = Graphics.FromImage(image);
                         SolidBrush brush1 = new SolidBrush(Color.Red);
                         Pen pen = new Pen(Brushes.Red, 2.0F);
-                        imageGraphics.FillRectangle(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
-                        imageGraphics.FillRectangle(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                        if (MiniDot2 != Dot2 && MiniDot1 != Dot2)
+                        {
+                            imageGraphics.FillEllipse(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                        }
                         imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
                         pictureBox.Image = image;
                         foreach (Connection line in UsedConnections)
@@ -623,7 +637,10 @@ namespace Lab3
                         }
                         Dot1 = null;
                         Dot2 = null;
-                        MessageBox.Show(CurrWay.ToString());
+                        if (CurrWay == MinWayMini)
+                        {
+                            MessageBox.Show("правильно!");
+                        }
                     }
                 }
                 else
@@ -631,7 +648,14 @@ namespace Lab3
                     if (e.Button == MouseButtons.Left)
                     {
                         FindDot(e.Location);
-                        DrawRec(Dot1);
+                        if (IsUsedDots(Dot1))
+                        {
+                            DrawEll(Dot1);
+                        }
+                        else
+                        {
+                            Dot1 = null;
+                        }
                     }
                 }
                 if (e.Button == MouseButtons.Right)
@@ -648,11 +672,11 @@ namespace Lab3
             bool t = false;
             foreach (Connection link in UsedConnections)
             {
-                if (link.firstDot == Dot1 && link.firstDot == Dot2)
+                if (link.firstDot == Dot1 && link.secondDot == Dot2)
                 {
                     t = true;
                 }
-                if (link.secondDot == Dot2 && link.firstDot == Dot1)
+                if (link.secondDot == Dot1 && link.firstDot == Dot2)
                 {
                     t = true;
                 }
@@ -660,40 +684,30 @@ namespace Lab3
             return t;
         }
 
-        public bool IsUsedDots()
+        public bool IsUsedDots(Dot dot)
         {
             bool t = false;
-            foreach (Dot dot in UsedDots)
+            foreach (Dot Dot in UsedDots)
             {
-                if ()
+                if (Dot == dot)
                 {
                     t = true;
                 }
 
             }
+            return t;
         }
 
-        public void calc()
+
+        public void DrawEll(Dot dot)
         {
-            int n = 5;
-            int[] arr = new int[5];
-            int m = 0;
-            int k = 1;
-            for (int i = 1; i <+ n; i++)
+            if (dot != MiniDot1 && MiniDot2 != dot)
             {
-                arr[i] = m;
-                m++;
-                k = k * i;
+                Graphics imageGraphics = Graphics.FromImage(image);
+                SolidBrush brush1 = new SolidBrush(Color.Red);
+                imageGraphics.FillEllipse(brush1, dot.x - 5, dot.y + 5, 10, 10);
+                pictureBox.Image = image;
             }
-            for 
-        }
-
-        public void DrawRec(Dot dot)
-        {
-            Graphics imageGraphics = Graphics.FromImage(image);
-            SolidBrush brush1 = new SolidBrush(Color.Red);
-            imageGraphics.FillRectangle(brush1, dot.x - 5, dot.y + 5, 10, 10);
-            pictureBox.Image = image;
         }
 
         public void MouseClickGame()
@@ -847,7 +861,7 @@ namespace Lab3
             return added;
         }
 
-        public double MinWay(List<Dot> Pased)
+        public void MinWay(List<Dot> Pased)
         {
             //List<double> way = new List<double>(Pased.Count); 
             //List<bool> fix = new List<bool>(Pased.Count);
@@ -899,7 +913,7 @@ namespace Lab3
                     }
                 }
             }
-            return way[UsedDots.IndexOf(MiniDot2)];
+            MinWayMini = way[UsedDots.IndexOf(MiniDot2)];
             /*for (int m = 0; m < way.Length ; m++)
             {
                 Graphics imageGraphics = Graphics.FromImage(image);
@@ -910,5 +924,10 @@ namespace Lab3
             }*/
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Fill_MiniGame_1_and_3_PicBox(MiniDot1, MiniDot2);
+            CurrWay = 0;
+        }
     }
 }
