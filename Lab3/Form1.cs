@@ -55,7 +55,6 @@ namespace Lab3
         /// <param name="count">Количество создаваемых точек</param>
         public void SetDots(int count)
         {
-            /*
              Random random = new Random();
              SolidBrush brush = new SolidBrush(Color.Blue);
              int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
@@ -81,12 +80,6 @@ namespace Lab3
                  else
                      i--;
              }
-             */
-            DotsList.Add(new Dot(130,200,1));
-            DotsList.Add(new Dot(200, 200, 2));
-            DotsList.Add(new Dot(270, 200, 3));
-            DotsList.Add(new Dot(130, 270, 4));
-            DotsList.Add(new Dot(200, 270, 5));
             FillPictureBox();
         }
 
@@ -230,88 +223,131 @@ namespace Lab3
         }
 
         #region Methods for second game
-                /*
-                /// <summary>
-                /// Заполняет указанный массив точками, которые могут быть использованы для проведения через них путей
-                /// </summary>
-                /// <param name="Transitions"></param>
-                public void SetUsingDotsForSecondGame(List<Dot> UsingDotsForSecondGame, Dot Dot1, Dot Dot2)
-                {
-                    int counter = 0;
-                    for (int i = 0; i < UsedDots.Count; i++)
-                    {
-                        counter = 0;
-                        foreach (var Connect in UsedConnections)
-                        {
-                            if (UsedDots[i] == Connect.firstDot || UsedDots[i] == Connect.secondDot)
-                                counter++;
-                        }
-                        if (counter >= 2 && UsedDots[i] != Dot1 && UsedDots[i] != Dot2)
-                            UsingDotsForSecondGame.Add(UsedDots[i]);
-                    }
-                }
-                */
 
-                /// <summary>
-                /// Возвращает массив точек, доступных для указанной точки (соединенных с ней связью)
-                /// </summary>
-                /// <param name="Dot"></param>
-                /// <returns></returns>
-                public List<Dot> GiveOpenDots(Dot Dot)
-                {
-                    List<Dot> Dots = new List<Dot>();
+        /// <summary>
+        /// Возвращает массив точек, доступных для указанной точки (соединенных с ней связью)
+        /// </summary>
+        /// <param name="Dot"></param>
+        /// <returns></returns>
+        public List<Dot> GiveOpenDots(Dot Dot)
+        {
+            List<Dot> Dots = new List<Dot>();
 
-                    foreach (var Connect in UsedConnections)
-                    {
-                        if (Dot == Connect.firstDot)
-                            Dots.Add(Connect.secondDot);
-                        else if (Dot == Connect.secondDot)
-                            Dots.Add(Connect.firstDot);
-                    }
-                    return Dots;
-                }
+            foreach (var Connect in UsedConnections)
+            {
+                if (Dot == Connect.firstDot)
+                    Dots.Add(Connect.secondDot);
+                else if (Dot == Connect.secondDot)
+                    Dots.Add(Connect.firstDot);
+            }
+            return Dots;
+        }
 
-                /// <summary>
-                /// Рекурсивный метод, заполняющий массив Ways всеми существующими путями от CurrentDot до Dot2 (TakenDots - Промежуточный массив, использующися только для реализации рекурсии)
-                /// </summary>
-                /// <param name="CurrentDot">Точка, от которой начинается путь</param>
-                /// <param name="TakenDots">Промежуточный массив, использующися только для реализации рекурсии</param>
-                /// <param name="Dot2">Точка, в которой заканчивается путь</param>
-                /// <param name="Ways">Заполняемый массив путей</param>
-                public void SetWaysForSecondGame(Dot CurrentDot, List<Dot> TakenDots,Dot Dot2, List<List<Dot>> Ways)
+        /// <summary>
+        /// Рекурсивный метод, заполняющий массив Ways всеми существующими путями от CurrentDot до Dot2 (TakenDots - Промежуточный массив, использующися только для реализации рекурсии)
+        /// </summary>
+        /// <param name="CurrentDot">Точка, от которой начинается путь</param>
+        /// <param name="TakenDots">Промежуточный массив, использующися только для реализации рекурсии</param>
+        /// <param name="Dot2">Точка, в которой заканчивается путь</param>
+        /// <param name="Ways">Заполняемый массив путей</param>
+        public void SetWaysForSecondGame(Dot CurrentDot, List<Dot> TakenDots,Dot Dot2, List<List<Dot>> Ways)
+        {
+            List<Dot> TakenDots2 = new List<Dot>();
+            TakenDots2.AddRange(TakenDots); //Создаем и заполняем новый, независимый промежуточный массив (нужен для того, чтобы мочь вернуться в предыдущее состояние при переходах между точками)
+            if (CurrentDot != Dot2 && IsRepeat(CurrentDot, TakenDots2) == false)
+            {
+                TakenDots2.Add(CurrentDot);
+                foreach (var OpenDot in GiveOpenDots(CurrentDot))
                 {
-                    List<Dot> TakenDots2 = new List<Dot>();
-                    TakenDots2.AddRange(TakenDots); //Создаем и заполняем новый, независимый промежуточный массив (нужен для того, чтобы мочь вернуться в предыдущее состояние при переходах между точками)
-                    if (CurrentDot != Dot2 && IsRepeat(CurrentDot, TakenDots2) == false)
-                    {
-                        TakenDots2.Add(CurrentDot);
-                        foreach (var OpenDot in GiveOpenDots(CurrentDot))
-                        {
-                            if (IsRepeat(OpenDot, TakenDots2) == false)
-                                SetWaysForSecondGame(OpenDot, TakenDots2, Dot2, Ways);
-                        }
-                    }
-                    else if (CurrentDot == Dot2)
-                    {
-                        TakenDots2.Add(CurrentDot);
-                        Ways.Add(TakenDots2);
-                    }
+                    if (IsRepeat(OpenDot, TakenDots2) == false)
+                        SetWaysForSecondGame(OpenDot, TakenDots2, Dot2, Ways);
                 }
+            }
+            else if (CurrentDot == Dot2)
+            {
+                TakenDots2.Add(CurrentDot);
+                Ways.Add(TakenDots2);
+            }
+        }
 
-                /// <summary>
-                /// Возвращает true, если указанная пропускная способность (Solution) между Dot1 и Dot2 дейсвительно максимальная
-                /// </summary>
-                /// <param name="Solution"></param>
-                /// <param name="Dot1"></param>
-                /// <param name="Dot2"></param>
-                /// <returns></returns>
-                public bool CheckSecondGame(double Solution, Dot Dot1, Dot Dot2)
+        /// <summary>
+        /// Возвращает значение максимального потока между указанными точками
+        /// </summary>
+        /// <param name="Dot1"></param>
+        /// <param name="Dot2"></param>
+        /// <returns></returns>
+        public double GiveFlowBetweenDots(Dot Dot1, Dot Dot2)
+        {
+            double Flow = 0;
+            foreach (var Connect in UsedConnections)
+            {
+                if (Dot1 == Connect.firstDot && Dot2 == Connect.secondDot)
+                    Flow = Connect.maxFlow;
+                else if (Dot1 == Connect.secondDot && Dot2 == Connect.firstDot)
+                    Flow = Connect.maxFlow;
+            }
+            return Flow;
+        }
+
+        /// <summary>
+        /// Возвращает самый большой поток среди всех путей в массиве Ways
+        /// </summary>
+        /// <param name="Ways"></param>
+        /// <returns></returns>
+        public double GiveMaxFlowForWays(List<List<Dot>> Ways)
+        {
+            double MaxFlow = 0;
+            foreach (var Way in Ways)
+            {
+                double IntermediateValue = 100;
+                for (int i = 0; i < Way.Count-1; i++)
                 {
-                    bool check = false;
-                    
-                    return check;
+                   if (IntermediateValue > GiveFlowBetweenDots(Way[i], Way[i + 1]))
+                   IntermediateValue = GiveFlowBetweenDots(Way[i], Way[i + 1]);
                 }
-                #endregion
+                if (MaxFlow < IntermediateValue)
+                    MaxFlow = IntermediateValue;
+            }
+            return MaxFlow;
+        }
+
+        /// <summary>
+        /// Возвращает значение потока через указанный путь (ДЛЯ ТЕБЯ МАКС, ПОСЧИТАЙ ПОЛЬЗОВАТЕЛЯ ЭТИМ МЕТОДОМ)
+        /// </summary>
+        /// <param name="Ways"></param>
+        /// <returns></returns>
+        public double GiveMaxFlowForWays(List<Dot> Way)
+        {
+            double Flow = 0;
+                double IntermediateValue = 100;
+                for (int i = 0; i < Way.Count - 1; i++)
+                {
+                    if (IntermediateValue > GiveFlowBetweenDots(Way[i], Way[i + 1]))
+                        IntermediateValue = GiveFlowBetweenDots(Way[i], Way[i + 1]);
+                }
+                if (Flow < IntermediateValue)
+                    Flow = IntermediateValue;
+            return Flow;
+        }
+
+        /// <summary>
+        /// Возвращает true, если указанная пропускная способность (Solution) между Dot1 и Dot2 дейсвительно максимальная
+        /// </summary>
+        /// <param name="Solution">Посчитанная по полученным пользователем данным максимальная пропускная способность</param>
+        /// <param name="Dot1"></param>
+        /// <param name="Dot2"></param>
+        /// <returns></returns>
+        public bool CheckSecondGame(double Solution, Dot Dot1, Dot Dot2)
+        {
+            bool check = false;
+            List<List<Dot>> Ways = new List<List<Dot>>(); //Массив для заполнения всевозможными путями
+            List<Dot> TakenDots = new List<Dot>(); //Промежуточный массив для метода SetWaysForSecondGame (возможно, не нужен вовсе)
+            SetWaysForSecondGame(Dot1, TakenDots, Dot2, Ways); //Заполняем массив Ways всевозможными путями
+            if (Solution == GiveMaxFlowForWays(Ways))
+                check = true;
+            return check;
+        }
+        #endregion
 
         #region  Methods for third game
         /// <summary>
@@ -416,7 +452,7 @@ namespace Lab3
         }
 
         /// <summary>
-        /// Заполняет указанный массив пятью рандомными точками массива ListDots
+        /// Заполняет указанный массив пятью рандомными точками массива ListDots (ДЛЯ ТЕБЯ, МАКС)
         /// </summary>
         /// <param name="DotsForGame"></param>
         public void SetDotsForThirdGame(List<Dot> DotsForGame)
@@ -796,13 +832,6 @@ namespace Lab3
             SetDots(10);
             SetConnections(10);
             RefreshListView();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            List<List<Dot>> Ways = new List<List<Dot>>();
-            List<Dot> TakenDots = new List<Dot>();
-            SetWaysForSecondGame(DotsList[0], TakenDots, DotsList[4], Ways);
         }
     }
 }
