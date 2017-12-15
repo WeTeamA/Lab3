@@ -18,8 +18,8 @@ namespace Lab3
             InitializeComponent();
         }
 
-        string filename = "../../../res_score.txt";
-        string file_image = "../../../Images/";
+        string filename = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt";
+        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\";
         string[] result;
         /// <summary>
         /// добавление имени игрока в файл и в result
@@ -102,7 +102,6 @@ namespace Lab3
             {
                 if (listBox_Result.SelectedItems[0].Text == item.Split(' ')[1])
                 {
-                    //File.Open(file_image + item.Split(' ')[0] + ".bmp", FileMode.Open);
                     pictureBox.Image = new Bitmap(file_image + item.Split(' ')[0] + ".bmp", true);
                 }
             }

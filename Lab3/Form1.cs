@@ -23,8 +23,8 @@ namespace Lab3
         /// <summary>
         /// ссылка на текстовый документ
         /// </summary>
-        string file_score = "../../../res_score.txt"; //Вписать свой путь и загрузить к себе
-        string file_image = "../../../Images"; //Вписать свой путь и загрузить к себе
+        string file_score = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt";
+        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; 
         double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
@@ -103,7 +103,6 @@ namespace Lab3
                 double flow = random.Next(10, 100);
                 ConnectionsList.Add(new Connection(max, min, flow));
             }
-            ConnectionsList.Add(new Connection(500, 0, 40));
         }
 
         /// <summary>
@@ -807,8 +806,6 @@ namespace Lab3
             return t;
         }
 
-
-
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
@@ -869,7 +866,7 @@ namespace Lab3
             label1.Text = "Ваш счет: " + Math.Round(score);
         }
 
-
+        #region Table of records and others
         public void add_result(string text)
         {
             using (StreamWriter writer = new StreamWriter(file_score, true))
@@ -892,6 +889,7 @@ namespace Lab3
             }
             return score;
         }
+        #endregion 
 
         private void button_start_Click(object sender, EventArgs e)
         {
