@@ -12,7 +12,7 @@ namespace Lab3 {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
     internal sealed partial class SettingsDot : global::System.Configuration.ApplicationSettingsBase {
         
         private static SettingsDot defaultInstance = ((SettingsDot)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsDot())));
@@ -80,18 +80,6 @@ namespace Lab3 {
             }
             set {
                 this["maxWay"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public string countNewDot {
-            get {
-                return ((string)(this["countNewDot"]));
-            }
-            set {
-                this["countNewDot"] = value;
             }
         }
     }

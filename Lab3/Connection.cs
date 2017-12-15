@@ -38,7 +38,7 @@ namespace Lab3
         /// </summary>
         public void SetCurrentWay()
         {
-             currentWay = Math.Sqrt(Math.Pow(firstDot.x - secondDot.x, 2) + Math.Pow(firstDot.y - secondDot.y, 2));
+            currentWay = Math.Sqrt(Math.Pow(firstDot.x - secondDot.x, 2) + Math.Pow(firstDot.y - secondDot.y, 2));
         }
     }
 }
