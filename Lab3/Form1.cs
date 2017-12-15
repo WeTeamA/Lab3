@@ -23,8 +23,8 @@ namespace Lab3
         /// <summary>
         /// ссылка на текстовый документ
         /// </summary>
-        string file_score = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt";
-        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; 
+        string file_score = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt"; //Переписать на свой путь (и в Form2 тоже)
+        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; //Переписать на свой путь (и в Form2 тоже)
         double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
