@@ -31,7 +31,6 @@ namespace Lab3
         /// Использованные связи
         /// </summary>
         List<Connection> UsedConnections = new List<Connection>();
-        int size = 200; //Брать из файла настроек
         /// <summary>
         /// Поле, хранящее в себе первую соединяемую точку
         /// </summary>
@@ -573,7 +572,7 @@ namespace Lab3
 
         public Pen SetDotColor(double fill)
         {
-            double d = fill / size;
+            double d = fill / SettingsDot.Default.size;
             float width = Convert.ToSingle(fill / 10);
             if (d <= 0.5)
             {
