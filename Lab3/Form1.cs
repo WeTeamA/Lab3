@@ -54,7 +54,8 @@ namespace Lab3
         /// </summary>
         /// <param name="count">Количество создаваемых точек</param>
         public void SetDots(int count)
-        {  
+        {
+            /*
              Random random = new Random();
              SolidBrush brush = new SolidBrush(Color.Blue);
              int DotsListCount = DotsList.Count; //Запоминаем, сколько точек уже было в массиве
@@ -80,6 +81,12 @@ namespace Lab3
                  else
                      i--;
              }
+             */
+            DotsList.Add(new Dot(130,200,1));
+            DotsList.Add(new Dot(200, 200, 2));
+            DotsList.Add(new Dot(270, 200, 3));
+            DotsList.Add(new Dot(130, 270, 4));
+            DotsList.Add(new Dot(200, 270, 5));
             FillPictureBox();
         }
 
@@ -96,6 +103,7 @@ namespace Lab3
                 double flow = random.Next(10, 100);
                 ConnectionsList.Add(new Connection(max, min, flow));
             }
+            ConnectionsList.Add(new Connection(500, 0, 40));
         }
 
         /// <summary>
@@ -221,34 +229,91 @@ namespace Lab3
             return Connection;
         }
 
-        /// <summary>
-        /// Заполняет указанный массив пятью рандомными точками массива ListDots
-        /// </summary>
-        /// <param name="DotsForGame"></param>
-        public void SetDotsForGame(List<Dot> DotsForGame)
-        {
-            Random random = new Random();
-            while (DotsForGame.Count != 5)
-            {
-                Dot check = DotsList[random.Next(0, 9)];
-                if (IsRepeat(check, DotsForGame) == false)
-                    DotsForGame.Add(check);
-            }
-        }
+        #region Methods for second game
+                /*
+                /// <summary>
+                /// Заполняет указанный массив точками, которые могут быть использованы для проведения через них путей
+                /// </summary>
+                /// <param name="Transitions"></param>
+                public void SetUsingDotsForSecondGame(List<Dot> UsingDotsForSecondGame, Dot Dot1, Dot Dot2)
+                {
+                    int counter = 0;
+                    for (int i = 0; i < UsedDots.Count; i++)
+                    {
+                        counter = 0;
+                        foreach (var Connect in UsedConnections)
+                        {
+                            if (UsedDots[i] == Connect.firstDot || UsedDots[i] == Connect.secondDot)
+                                counter++;
+                        }
+                        if (counter >= 2 && UsedDots[i] != Dot1 && UsedDots[i] != Dot2)
+                            UsingDotsForSecondGame.Add(UsedDots[i]);
+                    }
+                }
+                */
 
-        /// <summary>
-        /// Возвращает факториал указанного числа
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int Factorial(int value)
-        {
-            int res = 1;
-            for (int i = value; i > 1; i--)
-                res *= i;
-            return res;
-        }
+                /// <summary>
+                /// Возвращает массив точек, доступных для указанной точки (соединенных с ней связью)
+                /// </summary>
+                /// <param name="Dot"></param>
+                /// <returns></returns>
+                public List<Dot> GiveOpenDots(Dot Dot)
+                {
+                    List<Dot> Dots = new List<Dot>();
 
+                    foreach (var Connect in UsedConnections)
+                    {
+                        if (Dot == Connect.firstDot)
+                            Dots.Add(Connect.secondDot);
+                        else if (Dot == Connect.secondDot)
+                            Dots.Add(Connect.firstDot);
+                    }
+                    return Dots;
+                }
+
+                /// <summary>
+                /// Рекурсивный метод, заполняющий массив Ways всеми существующими путями от CurrentDot до Dot2 (TakenDots - Промежуточный массив, использующися только для реализации рекурсии)
+                /// </summary>
+                /// <param name="CurrentDot">Точка, от которой начинается путь</param>
+                /// <param name="TakenDots">Промежуточный массив, использующися только для реализации рекурсии</param>
+                /// <param name="Dot2">Точка, в которой заканчивается путь</param>
+                /// <param name="Ways">Заполняемый массив путей</param>
+                public void SetWaysForSecondGame(Dot CurrentDot, List<Dot> TakenDots,Dot Dot2, List<List<Dot>> Ways)
+                {
+                    List<Dot> TakenDots2 = new List<Dot>();
+                    TakenDots2.AddRange(TakenDots); //Создаем и заполняем новый, независимый промежуточный массив (нужен для того, чтобы мочь вернуться в предыдущее состояние при переходах между точками)
+                    if (CurrentDot != Dot2 && IsRepeat(CurrentDot, TakenDots2) == false)
+                    {
+                        TakenDots2.Add(CurrentDot);
+                        foreach (var OpenDot in GiveOpenDots(CurrentDot))
+                        {
+                            if (IsRepeat(OpenDot, TakenDots2) == false)
+                                SetWaysForSecondGame(OpenDot, TakenDots2, Dot2, Ways);
+                        }
+                    }
+                    else if (CurrentDot == Dot2)
+                    {
+                        TakenDots2.Add(CurrentDot);
+                        Ways.Add(TakenDots2);
+                    }
+                }
+
+                /// <summary>
+                /// Возвращает true, если указанная пропускная способность (Solution) между Dot1 и Dot2 дейсвительно максимальная
+                /// </summary>
+                /// <param name="Solution"></param>
+                /// <param name="Dot1"></param>
+                /// <param name="Dot2"></param>
+                /// <returns></returns>
+                public bool CheckSecondGame(double Solution, Dot Dot1, Dot Dot2)
+                {
+                    bool check = false;
+                    
+                    return check;
+                }
+                #endregion
+
+        #region  Methods for third game
         /// <summary>
         /// Возвращает путь между двумя указанными точками
         /// </summary>
@@ -324,9 +389,9 @@ namespace Lab3
             bool flag = false;
             for (int i = 0; i < Array.Count(); i++)
             {
-                for (int j = i+1; j<Array.Count(); j++)
-                if (Array[i] == Array[j])
-                    flag = true;
+                for (int j = i + 1; j < Array.Count(); j++)
+                    if (Array[i] == Array[j])
+                        flag = true;
             }
             return flag;
         }
@@ -339,15 +404,30 @@ namespace Lab3
         {
             double Summ = 0;
             for (int i = 0; i < 5; i++)
-            try
-            { 
-                Summ += WayBetweenDots(Solution[i], Solution[i + 1]);
-            }
-            catch
+                try
+                {
+                    Summ += WayBetweenDots(Solution[i], Solution[i + 1]);
+                }
+                catch
+                {
+                    Summ += WayBetweenDots(Solution[0], Solution[4]);
+                }
+            return Summ;
+        }
+
+        /// <summary>
+        /// Заполняет указанный массив пятью рандомными точками массива ListDots
+        /// </summary>
+        /// <param name="DotsForGame"></param>
+        public void SetDotsForThirdGame(List<Dot> DotsForGame)
+        {
+            Random random = new Random();
+            while (DotsForGame.Count != 5)
             {
-                Summ += WayBetweenDots(Solution[0], Solution[4]);
+                Dot check = DotsList[random.Next(0, 9)];
+                if (IsRepeat(check, DotsForGame) == false)
+                    DotsForGame.Add(check);
             }
-                return Summ;
         }
 
         /// <summary>
@@ -355,7 +435,7 @@ namespace Lab3
         /// </summary>
         /// <param name="Solution"></param>
         /// <returns></returns>
-        public bool CheckThirdGame(int Solution, List<Dot> DotsForGame)
+        public bool CheckThirdGame(double Solution, List<Dot> DotsForGame)
         {
             bool check = false;
             List<List<Dot>> Solutions = new List<List<Dot>>();
@@ -371,13 +451,13 @@ namespace Lab3
                 }
                 else
                     CharArray.AddRange(SeriesDots); //Заполняем массив char (теперь можем изменять элементы по индексу)
-    
+
                 if (IsRepeat('5', CharArray) == false && IsRepeat('6', CharArray) == false && IsRepeat('7', CharArray) == false && IsRepeat('8', CharArray) == false && IsRepeat('9', CharArray) == false)
-                if (IsRepeat(CharArray) == false)
-                {
-                    if (IsRepeat(new List<Dot>() { DotsForGame[CharArray[0] - 48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48] }, Solutions) == false)
-                        Solutions.Add(new List<Dot>() {DotsForGame[CharArray[0]-48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48]}); 
-                }
+                    if (IsRepeat(CharArray) == false)
+                    {
+                        if (IsRepeat(new List<Dot>() { DotsForGame[CharArray[0] - 48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48] }, Solutions) == false)
+                            Solutions.Add(new List<Dot>() { DotsForGame[CharArray[0] - 48], DotsForGame[CharArray[1] - 48], DotsForGame[CharArray[2] - 48], DotsForGame[CharArray[3] - 48], DotsForGame[CharArray[4] - 48] });
+                    }
                 CharArray.Clear();
             }
             for (int i = 0; i < Solutions.Count; i++)
@@ -388,6 +468,7 @@ namespace Lab3
                 check = true;
             return check;
         }
+        #endregion
 
         /// <summary>
         /// Рисует игровую картинку (связи и точки)
@@ -715,6 +796,13 @@ namespace Lab3
             SetDots(10);
             SetConnections(10);
             RefreshListView();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            List<List<Dot>> Ways = new List<List<Dot>>();
+            List<Dot> TakenDots = new List<Dot>();
+            SetWaysForSecondGame(DotsList[0], TakenDots, DotsList[4], Ways);
         }
     }
 }
