@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Lab3
 
@@ -18,6 +20,12 @@ namespace Lab3
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// ссылка на текстовый документ
+        /// </summary>
+        string file_score = "../../../res_score.txt";
+        string file_image = "../../../Images";
+        double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
         /// Учавствующие в рассчетах точки
@@ -181,8 +189,21 @@ namespace Lab3
             {
                 if (dot.currentFill >= 200 || dot.currentFill <= 0)
                 {
-                    MessageBox.Show("Вы проиграли");
-                    break;
+                    if (MessageBox.Show("Хотите сохранить результат?", "Вы проиграли!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        this.Visible = false;
+                        new Form2().Show();
+                        add_result(score.ToString());
+                        SaveImage();
+                        break;
+                    }
+                    else
+                    {
+                        this.Visible = false;
+                        new Form1().Show();
+                        break;
+                    }
+
                 }
             }
         }
@@ -511,6 +532,8 @@ namespace Lab3
             return t;
         }
 
+
+
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
@@ -530,6 +553,27 @@ namespace Lab3
                     RefreshAllValues();
                     RefreshListView();
                     FillPictureBox();
+                    Score();
+                    /*
+                    string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
+                    foreach (var dot in UsedDots)
+                    {
+                        a += Convert.ToString((int)dot.currentFill)+" ";
+                    }
+                    a +="\r\n" + "Текущая скорость наполнения для каждой из точки (Как в примере с 10 и 4): " +"\r\n";
+                    foreach (var dot in UsedDots)
+                    {
+                        a += Convert.ToString((int)dot.currentSpeed) + " ";
+                    }
+                    a += "\r\n" + "Текущий поток: " + "\r\n";
+                    foreach (var Connect in UsedConnections)
+                    {
+                        a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
+                    }
+                    
+                    a += Math.Round(Score()).ToString();
+                    MessageBox.Show(a);
+                    */
                 }
             }
             else
@@ -547,6 +591,31 @@ namespace Lab3
                 Dot1 = null;
                 FillPictureBox();
             }
+            label1.Text = "Ваш счет: " + Math.Round(score);
+        }
+
+
+        public void add_result(string text)
+        {
+            using (StreamWriter writer = new StreamWriter(file_score, true))
+            {
+                writer.Write(text+" ");
+            }
+        }
+
+        public void SaveImage()
+        {
+            image.Save(@"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"+score.ToString()+".bmp", ImageFormat.Bmp);
+        }
+
+        public double Score()
+        {
+            
+            foreach (var dot in DotsList)
+            {
+                score += 1 - Math.Abs(Math.Abs(2 * dot.currentFill / dot.size) - 1);
+            }
+            return score;
         }
 
         private void button_start_Click(object sender, EventArgs e)

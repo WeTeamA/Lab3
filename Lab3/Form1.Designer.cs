@@ -34,6 +34,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -85,18 +86,31 @@
             // 
             this.columnHeader3.Text = "Поток";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Modern No. 20", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(211, 509);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(116, 24);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Ваш счет: 0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(737, 505);
+            this.ClientSize = new System.Drawing.Size(737, 542);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.pictureBox);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -108,6 +122,7 @@
         public System.Windows.Forms.ColumnHeader columnHeader1;
         public System.Windows.Forms.ColumnHeader columnHeader2;
         public System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Label label1;
     }
 }
 
