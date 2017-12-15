@@ -116,11 +116,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("MS Reference Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(469, 39);
+            this.label2.Location = new System.Drawing.Point(523, 43);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(152, 16);
+            this.label2.Size = new System.Drawing.Size(53, 16);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Граф рекордсмена";
+            this.label2.Text = "Граф:";
             // 
             // Form2
             // 
