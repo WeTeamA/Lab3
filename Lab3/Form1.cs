@@ -297,7 +297,7 @@ namespace Lab3
 
         public Pen SetDotColor(double fill)
         {
-            double d = fill / size;
+            double d = fill / SettingsDot.Default.size;
             float width = Convert.ToSingle(fill / 10);
             if (d <= 0.5)
             {
