@@ -53,6 +53,18 @@ namespace Lab3
         /// Флажок, показывающий идет обычная или мини игра
         /// </summary>
         bool Flag = false;
+        /// <summary>
+        /// Первая точка мини игр 1 и 2
+        /// </summary>
+        Dot MiniDot1;
+        /// <summary>
+        /// Вторая точка мини игр 1 и 2
+        /// </summary>
+        Dot MiniDot2;
+        /// <summary>
+        /// Текущий путь игрока в 1-й мини игре
+        /// </summary>
+        double CurrWay;
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -537,13 +549,30 @@ namespace Lab3
             return t;
         }
 
-
+        public bool IsUsed()
+        {
+            bool t = false;
+            foreach (Connection line in UsedConnections)
+            {
+                if (Dot1 == line.firstDot && Dot2 == line.secondDot)
+                {
+                    t = true;
+                    break;
+                }
+                if (Dot1 == line.secondDot && Dot2 == line.firstDot)
+                {
+                    t = true;
+                    break;
+                }
+            }
+            return t;
+        }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (!Flag)
             {
-                if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+                if (Dot2 != null && !IsUsed()) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                 {
                     if (e.Button == MouseButtons.Left)
                     {
@@ -568,21 +597,41 @@ namespace Lab3
             }
             else
             {
-                if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+                if (Dot2 != null ) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                 {
                     if (e.Button == MouseButtons.Left)
                     {
-                        MouseClickGame();
+                        Graphics imageGraphics = Graphics.FromImage(image);
+                        SolidBrush brush1 = new SolidBrush(Color.Red);
+                        Pen pen = new Pen(Brushes.Red, 2.0F);
+                        imageGraphics.FillRectangle(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
+                        imageGraphics.FillRectangle(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                        imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+                        pictureBox.Image = image;
+                        foreach (Connection line in UsedConnections)
+                        {
+                            if (Dot1 == line.firstDot && Dot2 == line.secondDot)
+                            {
+                                CurrWay += line.currentWay;
+                                break;
+                            }
+                            if (Dot1 == line.secondDot && Dot2 == line.firstDot)
+                            {
+                                CurrWay += line.currentWay;
+                                break;
+                            }
+                        }
+                        Dot1 = null;
+                        Dot2 = null;
+                        MessageBox.Show(CurrWay.ToString());
                     }
                 }
                 else
                 {
-                    if (GiveSelectedItem().maxWay != 0)
+                    if (e.Button == MouseButtons.Left)
                     {
-                        if (e.Button == MouseButtons.Left)
-                        {
-                            FindDot(e.Location);
-                        }
+                        FindDot(e.Location);
+                        DrawRec(Dot1);
                     }
                 }
                 if (e.Button == MouseButtons.Right)
@@ -592,6 +641,14 @@ namespace Lab3
                 }
             }
 
+        }
+
+        public void DrawRec(Dot dot)
+        {
+            Graphics imageGraphics = Graphics.FromImage(image);
+            SolidBrush brush1 = new SolidBrush(Color.Red);
+            imageGraphics.FillRectangle(brush1, dot.x - 5, dot.y + 5, 10, 10);
+            pictureBox.Image = image;
         }
 
         public void MouseClickGame()
@@ -610,7 +667,7 @@ namespace Lab3
             RefreshListView();
             FillPictureBox();
 
-            string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
+            /*string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
             foreach (var dot in UsedDots)
             {
                 a += Convert.ToString((int)dot.currentFill) + " ";
@@ -625,7 +682,7 @@ namespace Lab3
             {
                 a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
             }
-            MessageBox.Show(a);
+            MessageBox.Show(a);*/
         }
 
 
@@ -673,6 +730,7 @@ namespace Lab3
         private void button1_Click(object sender, EventArgs e)
         {
             Flag = true;
+            CurrWay = 0;
             MinWay(obhod());
         }
 
@@ -680,7 +738,7 @@ namespace Lab3
         {
             Random random = new Random();            
             int index = random.Next(0, UsedDots.Count  - 1);
-            Dot dot1 = UsedDots[0];
+            Dot dot1 = UsedDots[index];
             List<Dot> Pased = new List<Dot>();
             List<Dot> turn = new List<Dot>();
             turn.Add(dot1);
@@ -701,6 +759,8 @@ namespace Lab3
                 }
             }
             Fill_MiniGame_1_and_3_PicBox(dot1, dot2);
+            MiniDot1 = dot1;
+            MiniDot2 = dot2;
             return Pased;
         }
 
@@ -727,12 +787,12 @@ namespace Lab3
                         t = false;
                     }
                 }
-                if (link.firstDot == dot1 && t)
+                if (link.firstDot == dot1 && t && !turn.Contains(link.secondDot))
                 {
                     turn.Add(link.secondDot);
                     added = true;
                 }
-                if (link.secondDot == dot1 && t)
+                if (link.secondDot == dot1 && t && !turn.Contains(link.firstDot)) 
                 {
                     turn.Add(link.firstDot);
                     added = true;
@@ -743,7 +803,7 @@ namespace Lab3
             return added;
         }
 
-        public void MinWay(List<Dot> Pased)
+        public double MinWay(List<Dot> Pased)
         {
             //List<double> way = new List<double>(Pased.Count); 
             //List<bool> fix = new List<bool>(Pased.Count);
@@ -752,7 +812,7 @@ namespace Lab3
             int index = 0;
             int index1;
             int index2;
-            way[0] = 0;
+            way[UsedDots.IndexOf(MiniDot1)] = 0;
             fix[0] = false;
             int min; 
             for (int i = 1; i < Pased.Count; i++)
@@ -795,19 +855,16 @@ namespace Lab3
                     }
                 }
             }
-            for (int m = 0; m < way.Length ; m++)
+            return way[UsedDots.IndexOf(MiniDot2)];
+            /*for (int m = 0; m < way.Length ; m++)
             {
                 Graphics imageGraphics = Graphics.FromImage(image);
                 SolidBrush brush1 = new SolidBrush(Color.Red);
                 imageGraphics.FillEllipse(brush1, Pased[m].x - 5, Pased[m].y + 5, 10, 10);
                 pictureBox.Image = image;
                 MessageBox.Show(way[m].ToString());
-            }
+            }*/
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-        //    image.Save("c:\\button.gif", System.Drawing.Imaging.ImageFormat.Gif);
-        }
     }
 }
