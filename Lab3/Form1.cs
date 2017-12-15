@@ -23,8 +23,8 @@ namespace Lab3
         /// <summary>
         /// ссылка на текстовый документ
         /// </summary>
-        string file_score = "../../../res_score.txt";
-        string file_image = "../../../Images";
+        string file_score = "../../../res_score.txt"; //Вписать свой путь и загрузить к себе
+        string file_image = "../../../Images"; //Вписать свой путь и загрузить к себе
         double score = 0;
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
@@ -605,7 +605,7 @@ namespace Lab3
 
         public void SaveImage()
         {
-            image.Save(@"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"+score.ToString()+".bmp", ImageFormat.Bmp);
+            image.Save(file_image+score.ToString()+".bmp", ImageFormat.Bmp);
         }
 
         public double Score()
