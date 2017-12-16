@@ -51,10 +51,42 @@ namespace Lab3
         /// Поле для отрисовки игровой картинки (нужно, т.к. поиск цвета пикселя непосредственно в PictureBox не возможен)
         /// </summary>
         Bitmap image = new Bitmap(480, 480);
+        //Color pixelColor;
         /// <summary>
-        /// Поле, в себе наводимую точку
+        /// Поле, хранящее в себе наводимую точку(Для отрисоки данных точки)
         /// </summary>
         Dot Dot3;
+        /// <summary>
+        /// Значение, показывающее какая игра происходит
+        /// </summary>
+        int GameC = 0;
+        /// <summary>
+        /// Первая точка мини игр 1 и 2
+        /// </summary>
+        Dot MiniDot1;
+        /// <summary>
+        /// Вторая точка мини игр 1 и 2
+        /// </summary>
+        Dot MiniDot2;
+        /// <summary>
+        /// Текущий путь игрока в 1-й мини игре
+        /// </summary>
+        double CurrWay;
+        /// <summary>
+        /// Минимальный путь для первой мини игры
+        /// </summary>
+        double MinWayMini;
+        /// <summary>
+        /// Минимальный поток выигрышного пути 2-й мини игры
+        /// </summary>
+        double MiniGameFoundFlow;
+        /// <summary>
+        /// Минимальный поток пути пользователя
+        /// </summary>
+        double MiniGameFlow = 300;
+
+
+
 
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
@@ -761,6 +793,37 @@ namespace Lab3
             }
             return t;
         }
+
+        /*public bool IsDot(Point point)
+{
+    bool t = false;
+    foreach (var dot in DotsList)
+    {
+        if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+        {
+            t = true;
+        }
+    }
+    return t;
+}*/
+        public bool IsUsed()
+        {
+            bool t = false;
+            foreach (Connection line in UsedConnections)
+            {
+                if (Dot1 == line.firstDot && Dot2 == line.secondDot)
+                {
+                    t = true;
+                    break;
+                }
+                if (Dot1 == line.secondDot && Dot2 == line.firstDot)
+                {
+                    t = true;
+                    break;
+                }
+            }
+            return t;
+        }
         #endregion
 
         #region Table of records and others
@@ -791,109 +854,235 @@ namespace Lab3
         #region Operating buttons
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            FillPictureBox();
-            Dot3 = null;
-            PointedDot(e.Location);
-            if (Dot3 != null)
+            switch (GameC)
             {
-                PointF pfill = new PointF(Dot3.x + 5, Dot3.y);
-                PointF pspeed = new PointF(Dot3.x + 5, Dot3.y + 20);
-                int fill = (int)Dot3.currentFill;
-                int speed = (int)Dot3.currentSpeed;
-                String sfill = fill.ToString();
-                String sspeed = speed.ToString();
-                Font drawFont = new Font("Times New Roman", 10);
-                SolidBrush drawBrush = new SolidBrush(Color.Black);
-                Bitmap String = null;
-                String = image;
-                Graphics stringGraphics = null;
-                stringGraphics = Graphics.FromImage(String);
-                stringGraphics.DrawString(sfill, drawFont, drawBrush, pfill);
-                stringGraphics.DrawString(sspeed, drawFont, drawBrush, pspeed);
-                pictureBox.Image = String;
-            }
-            if (Dot1 != null)
-            {
-                // pixelColor = GetColorAt(e.Location);
-                double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
-                if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
-                {
-                    if (IsDot(e.Location)) //Из этой строки выходит ошибка выбора элемента listView
+                case 0:
+                    FillPictureBox();
+                    Dot3 = null;
+                    PointedDot(e.Location);
+                    if (Dot3 != null)
                     {
-                        DrawLine(e.Location);
+                        PointF pfill = new PointF(Dot3.x + 5, Dot3.y);
+                        PointF pspeed = new PointF(Dot3.x + 5, Dot3.y + 20);
+                        int fill = (int)Dot3.currentFill;
+                        int speed = (int)Dot3.currentSpeed;
+                        String sfill = fill.ToString();
+                        String sspeed = speed.ToString();
+                        Font drawFont = new Font("Times New Roman", 10);
+                        SolidBrush drawBrush = new SolidBrush(Color.Black);
+                        Bitmap String = null;
+                        String = image;
+                        Graphics stringGraphics = null;
+                        stringGraphics = Graphics.FromImage(String);
+                        stringGraphics.DrawString(sfill, drawFont, drawBrush, pfill);
+                        stringGraphics.DrawString(sspeed, drawFont, drawBrush, pspeed);
+                        pictureBox.Image = String;
                     }
-                    else
+                    if (Dot1 != null)
                     {
-                        Pen pen = new Pen(Brushes.Yellow, 2.0F);
-                        DrawLine(pen, e.Location);
+                        // pixelColor = GetColorAt(e.Location);
+                        double way = Math.Sqrt(Math.Pow(e.Location.X - Dot1.x, 2) + Math.Pow(e.Location.Y - Dot1.y, 2));
+                        if (way >= GiveSelectedItem().minWay && way <= GiveSelectedItem().maxWay)
+                        {
+                            if (IsDot(e.Location)) //Из этой строки выходит ошибка выбора элемента listView
+                            {
+                                DrawLine(e.Location);
+                            }
+                            else
+                            {
+                                Pen pen = new Pen(Brushes.Yellow, 2.0F);
+                                DrawLine(pen, e.Location);
+                            }
+                        }
+                        else
+                        {
+                            Pen pen = new Pen(Brushes.Red, 2.0F);
+                            DrawLine(pen, e.Location);
+                        }
                     }
-                }
-                else
-                {
-                    Pen pen = new Pen(Brushes.Red, 2.0F);
-                    DrawLine(pen, e.Location);
-                }
+                    break;
+                case 3:
+
+                    break;
             }
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (Dot2 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+            switch (GameC)
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
-                    GiveSelectedItem().secondDot = Dot2;
-                    AddDotsToUsedDots(Dot1);
-                    AddDotsToUsedDots(Dot2);
-                    Dot1 = null; //Сбрасываем выделение первой точки
-                    Dot2 = null; //Cбрасываем выделение второй точки
-                    UsedConnections.Add(GiveSelectedItem());
-                    UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
-                    ConnectionsList.Remove(GiveSelectedItem());
-                    SetConnections(1);
-                    RefreshAllValues();
-                    RefreshListView();
-                    FillPictureBox();
-                    Score();
-                    /*
-                    string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
-                    foreach (var dot in UsedDots)
+                case 0:
+                    if (Dot2 != null && !IsUsed()) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                     {
-                        a += Convert.ToString((int)dot.currentFill)+" ";
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            MouseClickGame();
+                        }
                     }
-                    a +="\r\n" + "Текущая скорость наполнения для каждой из точки (Как в примере с 10 и 4): " +"\r\n";
-                    foreach (var dot in UsedDots)
+                    else
                     {
-                        a += Convert.ToString((int)dot.currentSpeed) + " ";
+                        if (GiveSelectedItem().maxWay != 0)
+                        {
+                            if (e.Button == MouseButtons.Left)
+                            {
+                                FindDot(e.Location);
+                            }
+                        }
                     }
-                    a += "\r\n" + "Текущий поток: " + "\r\n";
-                    foreach (var Connect in UsedConnections)
+                    if (e.Button == MouseButtons.Right)
                     {
-                        a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
+                        Dot1 = null;
+                        FillPictureBox();
                     }
-                    
-                    a += Math.Round(Score()).ToString();
-                    MessageBox.Show(a);
-                    */
-                }
-            }
-            else
-            {
-                if (GiveSelectedItem().maxWay != 0)
-                {
-                    if (e.Button == MouseButtons.Left)
+                    break;
+                case 1:
+                    if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
                     {
                         FindDot(e.Location);
+                        if (e.Button == MouseButtons.Left && Areconnected() && IsUsedDots(Dot2))
+                        {
+                            Graphics imageGraphics = Graphics.FromImage(image);
+                            SolidBrush brush1 = new SolidBrush(Color.Red);
+                            Pen pen = new Pen(Brushes.Red, 2.0F);
+                            if (MiniDot2 != Dot2 && MiniDot1 != Dot2)
+                            {
+                                imageGraphics.FillEllipse(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                            }
+                            imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+                            pictureBox.Image = image;
+                            foreach (Connection line in UsedConnections)
+                            {
+                                if (Dot1 == line.firstDot && Dot2 == line.secondDot)
+                                {
+                                    CurrWay += line.currentWay;
+                                    break;
+                                }
+                                if (Dot1 == line.secondDot && Dot2 == line.firstDot)
+                                {
+                                    CurrWay += line.currentWay;
+                                    break;
+                                }
+                            }
+                            Dot1 = null;
+                            Dot2 = null;
+                            if (Math.Round(CurrWay, 1) == Math.Round(MinWayMini,1))
+                            {
+                                MessageBox.Show("Правильно!");
+                            }
+                        }
                     }
-                }
+                    else
+                    {
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            FindDot(e.Location);
+                            if (IsUsedDots(Dot1))
+                            {
+                                DrawEll(Dot1);
+                            }
+                            else
+                            {
+                                Dot1 = null;
+                            }
+                        }
+                    }
+                    if (e.Button == MouseButtons.Right)
+                    {
+                        Graphics imageGraphics = Graphics.FromImage(image);
+                        if (Dot1 == MiniDot1 || Dot1 == MiniDot2)
+                        {
+                            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
+                        }
+                        else
+                        {
+                            SolidBrush brush1 = new SolidBrush(Color.Gray);
+                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
+                        }
+                        pictureBox.Image = image;
+                        Dot1 = null;                        
+                    }
+                    break;
+                case 2:
+                    if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+                    {
+                        FindDot(e.Location);
+                        if (e.Button == MouseButtons.Left && Areconnected() && IsUsedDots(Dot2))
+                        {
+                            Graphics imageGraphics = Graphics.FromImage(image);
+                            SolidBrush brush1 = new SolidBrush(Color.Red);
+                            Pen pen = new Pen(Brushes.Red, 2.0F);
+                            if (MiniDot2 != Dot2 && MiniDot1 != Dot2)
+                            {
+                                imageGraphics.FillEllipse(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                            }
+                            imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+                            pictureBox.Image = image;
+                            foreach (Connection line in UsedConnections)
+                            {
+                                if (Dot1 == line.firstDot && Dot2 == line.secondDot)
+                                {
+                                    if (line.maxFlow < MiniGameFoundFlow)
+                                    {
+                                        MiniGameFoundFlow = line.maxFlow; 
+                                    }
+                                    break;
+                                }
+                                if (Dot1 == line.secondDot && Dot2 == line.firstDot)
+                                {
+                                    if (line.maxFlow < MiniGameFoundFlow)
+                                    {
+                                        MiniGameFoundFlow = line.maxFlow;
+                                    }
+                                    break;
+                                }
+                            }
+                            Dot1 = null;
+                            Dot2 = null;
+                            if (MiniGameFlow == MiniGameFoundFlow)
+                            {
+                                MessageBox.Show("Правильно!");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            FindDot(e.Location);
+                            if (IsUsedDots(Dot1))
+                            {
+                                DrawEll(Dot1);
+                            }
+                            else
+                            {
+                                Dot1 = null;
+                            }
+                        }
+                    }
+                    if (e.Button == MouseButtons.Right)
+                    {
+                        Graphics imageGraphics = Graphics.FromImage(image);
+                        if (Dot1 == MiniDot1 || Dot1 == MiniDot2)
+                        {
+                            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
+                        }
+                        else
+                        {
+                            SolidBrush brush1 = new SolidBrush(Color.Gray);
+                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
+                        }
+                        pictureBox.Image = image;
+                        Dot1 = null;
+
+                    }
+                    break;
+                case 3:
+                    break;
             }
-            if (e.Button == MouseButtons.Right)
-            {
-                Dot1 = null;
-                FillPictureBox();
-            }
-            label1.Text = "Ваш счет: " + Math.Round(score);
+
+
         }
 
         private void button_start_Click(object sender, EventArgs e)
@@ -905,5 +1094,310 @@ namespace Lab3
             RefreshListView();
         }
         #endregion
+
+        public bool Areconnected()
+        {
+            bool t = false;
+            foreach (Connection link in UsedConnections)
+            {
+                if (link.firstDot == Dot1 && link.secondDot == Dot2)
+                {
+                    t = true;
+                }
+                if (link.secondDot == Dot1 && link.firstDot == Dot2)
+                {
+                    t = true;
+                }
+            }
+            return t;
+        }
+
+        public bool IsUsedDots(Dot dot)
+        {
+            bool t = false;
+            foreach (Dot Dot in UsedDots)
+            {
+                if (Dot == dot)
+                {
+                    t = true;
+                }
+
+            }
+            return t;
+        }
+
+
+        public void DrawEll(Dot dot)
+        {
+            if (dot != MiniDot1 && MiniDot2 != dot)
+            {
+                Graphics imageGraphics = Graphics.FromImage(image);
+                SolidBrush brush1 = new SolidBrush(Color.Red);
+                imageGraphics.FillEllipse(brush1, dot.x - 5, dot.y + 5, 10, 10);
+                pictureBox.Image = image;
+            }
+        }
+
+        public void MouseClickGame()
+        {
+            GiveSelectedItem().firstDot = Dot1; //Этим действием и в связь в массиве ConnectionsList добавляются точки Dot1 и Dot2 (видимо ссылается)
+            GiveSelectedItem().secondDot = Dot2;
+            AddDotsToUsedDots(Dot1);
+            AddDotsToUsedDots(Dot2);
+            Dot1 = null; //Сбрасываем выделение первой точки
+            Dot2 = null; //Cбрасываем выделение второй точки
+            UsedConnections.Add(GiveSelectedItem());
+            UsedConnections[UsedConnections.Count - 1].SetCurrentWay();
+            ConnectionsList.Remove(GiveSelectedItem());
+            SetConnections(1);
+            RefreshAllValues();
+            RefreshListView();
+            FillPictureBox();
+
+            /*string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
+            foreach (var dot in UsedDots)
+            {
+                a += Convert.ToString((int)dot.currentFill) + " ";
+            }
+            a += "\r\n" + "Текущая скорость наполнения для каждой из точки (Как в примере с 10 и 4): " + "\r\n";
+            foreach (var dot in UsedDots)
+            {
+                a += Convert.ToString((int)dot.currentSpeed) + " ";
+            }
+            a += "\r\n" + "Текущий поток: " + "\r\n";
+            foreach (var Connect in UsedConnections)
+            {
+                a += Convert.ToString(Math.Abs((int)Connect.change_Fill_For_First_Dot)) + " ";
+            }
+            MessageBox.Show(a);*/
+        }
+
+        public void Fill_MiniGame_1_PicBox(Dot dot1, Dot dot2)
+        {
+            {
+                Font drawFont = new Font("Times New Roman", 10);
+                SolidBrush drawBrush = new SolidBrush(Color.Black);
+                SolidBrush wbrush = new SolidBrush(Color.White);
+                Graphics imageGraphics = Graphics.FromImage(image);
+                imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
+                foreach (var line in UsedConnections)
+                {
+                    Single width = Convert.ToSingle(line.maxFlow / 10);
+                    Pen pen = new Pen(Color.Gray);
+                    imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
+                    int Line = Math.Abs((int)line.currentWay);//Число посередине связи
+                    String sline = Line.ToString();
+                    PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
+                    imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
+
+                }
+                foreach (var point in DotsList)
+                {
+                    SolidBrush brush = new SolidBrush(Color.Gray);
+                    imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+                }
+                SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+                imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
+                imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
+                pictureBox.Image = image;
+            }
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GameC = 1;
+            CurrWay = 0;
+            MinWay(obhod());
+        }
+
+        public List<Dot> obhod()
+        {
+            Random random = new Random();            
+            int index = random.Next(0, UsedDots.Count  - 1);
+            Dot dot1 = UsedDots[index];
+            List<Dot> Pased = new List<Dot>();
+            List<Dot> turn = new List<Dot>();
+            turn.Add(dot1);
+            Dot dot2 = null;
+            bool added = true;
+            while (turn.Any() || added)
+            {
+                added = SearhConnectedDots(turn[0], turn, Pased);
+                if (added)
+                {
+                    MoveList(turn);
+                }
+                else
+                {
+                    dot2 = turn[0];
+                    MoveList(turn);
+
+                }
+            }
+            Fill_MiniGame_1_PicBox(dot1, dot2);
+            MiniDot1 = dot1;
+            MiniDot2 = dot2;
+            return Pased;
+        }
+
+        public void MoveList(List<Dot> turn)
+        {
+            for (int i = 0; i < turn.Count - 1; i++)
+            {
+                turn[i] = turn[i + 1];
+            }
+            turn.RemoveAt(turn.Count - 1);
+        }
+
+        public bool SearhConnectedDots(Dot dot1, List<Dot> turn, List<Dot> Pased)
+        {
+            bool added = false;
+            bool t = true;
+            foreach (Connection link in UsedConnections)
+            {
+                t = true;
+                foreach (Dot dot in Pased)
+                {
+                    if (link.secondDot == dot || link.firstDot == dot)
+                    {
+                        t = false;
+                    }
+                }
+                if (link.firstDot == dot1 && t && !turn.Contains(link.secondDot))
+                {
+                    turn.Add(link.secondDot);
+                    added = true;
+                }
+                if (link.secondDot == dot1 && t && !turn.Contains(link.firstDot)) 
+                {
+                    turn.Add(link.firstDot);
+                    added = true;
+                }
+            }
+            Pased.Add(dot1);
+            return added;
+        }
+
+        public void MinWay(List<Dot> Pased)
+        {
+            //List<double> way = new List<double>(Pased.Count); 
+            //List<bool> fix = new List<bool>(Pased.Count);
+            double[] way = new double[Pased.Count];
+            bool[] fix = new bool[Pased.Count];
+            int index = 0;
+            int index1;
+            int index2;
+            way[UsedDots.IndexOf(MiniDot1)] = 0;
+            fix[0] = false;
+            int min; 
+            for (int i = 1; i < Pased.Count; i++)
+            {
+                way[i] = 10000000000;
+                fix[i] = false;
+            }
+            Dot dot;
+            for (int i = Pased.Count ; i > 0; i--)
+            {
+                min = 10000000;
+                for (int j = 0; j < way.Count() ; j++)
+                {
+                    if (way[j] < min && !fix[j])
+                    {
+                        index = j;
+                    }
+                }
+                fix[index] = true;
+                dot = Pased[index];
+                foreach (Connection link in UsedConnections)
+                {
+                    if (link.firstDot == dot)
+                    {
+                        index1 = Pased.IndexOf(link.firstDot);
+                        index2 = Pased.IndexOf(link.secondDot);
+                        if (way[index2] > link.currentWay + way[index1])
+                        {
+                            way[index2] = link.currentWay + way[index1];
+                        }
+                    }
+                    if (link.secondDot == dot)
+                    {
+                        index1 = Pased.IndexOf(link.firstDot);
+                        index2 = Pased.IndexOf(link.secondDot);
+                        if (way[index1] > link.currentWay + way[index2])
+                        {
+                            way[index1] = link.currentWay + way[index2];
+                        }
+                    }
+                }
+            }
+            MinWayMini = way[UsedDots.IndexOf(MiniDot2)];
+            /*for (int m = 0; m < way.Length ; m++)
+            {
+                Graphics imageGraphics = Graphics.FromImage(image);
+                SolidBrush brush1 = new SolidBrush(Color.Red);
+                imageGraphics.FillEllipse(brush1, Pased[m].x - 5, Pased[m].y + 5, 10, 10);
+                pictureBox.Image = image;
+                MessageBox.Show(way[m].ToString());
+            }*/
+        }
+
+        public void Fill_MiniGame_2_PicBox(Dot dot1, Dot dot2)
+        {
+            Font drawFont = new Font("Times New Roman", 10);
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            SolidBrush wbrush = new SolidBrush(Color.White);
+            Graphics imageGraphics = Graphics.FromImage(image);
+            imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
+            foreach (var line in UsedConnections)
+            {
+                Single width = Convert.ToSingle(line.maxFlow / 10);
+                Pen pen = new Pen(Color.Gray);
+                imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
+                int Line = Math.Abs((int)line.maxFlow);//Число посередине связи
+                String sline = Line.ToString();
+                PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
+                imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
+
+            }
+            foreach (var point in DotsList)
+            {
+                SolidBrush brush = new SolidBrush(Color.Gray);
+                imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+            }
+            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+            imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
+            imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
+            pictureBox.Image = image;
+        }
+
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
+            CurrWay = 0;
+        }
+
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
+            MiniGameFlow = 300;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
