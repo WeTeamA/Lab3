@@ -84,10 +84,10 @@ namespace Lab3
         /// Минимальный поток пути пользователя
         /// </summary>
         double MiniGameFlow = 300;
-
-
-
-
+        /// <summary>
+        /// Минимальный поток пути пользователя
+        /// </summary>
+        List<Dot> GamingList = new List<Dot>();
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
         /// </summary>
@@ -963,7 +963,7 @@ namespace Lab3
                                     break;
                                 }
                             }
-                            Dot1 = null;
+                            Dot1 = Dot2;
                             Dot2 = null;
                             if (Math.Round(CurrWay, 1) == Math.Round(MinWayMini,1))
                             {
@@ -988,19 +988,10 @@ namespace Lab3
                     }
                     if (e.Button == MouseButtons.Right)
                     {
-                        Graphics imageGraphics = Graphics.FromImage(image);
-                        if (Dot1 == MiniDot1 || Dot1 == MiniDot2)
-                        {
-                            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
-                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
-                        }
-                        else
-                        {
-                            SolidBrush brush1 = new SolidBrush(Color.Gray);
-                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
-                        }
-                        pictureBox.Image = image;
-                        Dot1 = null;                        
+                        Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
+                        CurrWay = 0;
+                        Dot1 = null;
+                        Dot2 = null;
                     }
                     break;
                 case 2:
@@ -1018,28 +1009,10 @@ namespace Lab3
                             }
                             imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
                             pictureBox.Image = image;
-                            foreach (Connection line in UsedConnections)
-                            {
-                                if (Dot1 == line.firstDot && Dot2 == line.secondDot)
-                                {
-                                    if (line.maxFlow < MiniGameFoundFlow)
-                                    {
-                                        MiniGameFoundFlow = line.maxFlow; 
-                                    }
-                                    break;
-                                }
-                                if (Dot1 == line.secondDot && Dot2 == line.firstDot)
-                                {
-                                    if (line.maxFlow < MiniGameFoundFlow)
-                                    {
-                                        MiniGameFoundFlow = line.maxFlow;
-                                    }
-                                    break;
-                                }
-                            }
-                            Dot1 = null;
+                            GamingList.Add(Dot2);
+                            Dot1 = Dot2;
                             Dot2 = null;
-                            if (MiniGameFlow == MiniGameFoundFlow)
+                            if (CheckSecondGame(GiveMaxFlowForWays(GamingList), MiniDot1, MiniDot2) && Dot2 == MiniDot2)
                             {
                                 MessageBox.Show("Правильно!");
                             }
@@ -1052,6 +1025,7 @@ namespace Lab3
                             FindDot(e.Location);
                             if (IsUsedDots(Dot1))
                             {
+                                GamingList.Add(Dot1);
                                 DrawEll(Dot1);
                             }
                             else
@@ -1062,20 +1036,10 @@ namespace Lab3
                     }
                     if (e.Button == MouseButtons.Right)
                     {
-                        Graphics imageGraphics = Graphics.FromImage(image);
-                        if (Dot1 == MiniDot1 || Dot1 == MiniDot2)
-                        {
-                            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
-                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
-                        }
-                        else
-                        {
-                            SolidBrush brush1 = new SolidBrush(Color.Gray);
-                            imageGraphics.FillEllipse(brush1, Dot1.x - 5, Dot1.y + 5, 10, 10);
-                        }
-                        pictureBox.Image = image;
+                        Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
                         Dot1 = null;
-
+                        Dot2 = null;
+                        GamingList.Clear();
                     }
                     break;
                 case 3:
@@ -1209,6 +1173,8 @@ namespace Lab3
             GameC = 1;
             CurrWay = 0;
             MinWay(obhod());
+            Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
+
         }
 
         public List<Dot> obhod()
@@ -1235,7 +1201,6 @@ namespace Lab3
 
                 }
             }
-            Fill_MiniGame_1_PicBox(dot1, dot2);
             MiniDot1 = dot1;
             MiniDot2 = dot2;
             return Pased;
@@ -1288,7 +1253,7 @@ namespace Lab3
             int index = 0;
             int index1;
             int index2;
-            way[UsedDots.IndexOf(MiniDot1)] = 0;
+            way[Pased.IndexOf(MiniDot1)] = 0;
             fix[0] = false;
             int min; 
             for (int i = 1; i < Pased.Count; i++)
@@ -1331,7 +1296,7 @@ namespace Lab3
                     }
                 }
             }
-            MinWayMini = way[UsedDots.IndexOf(MiniDot2)];
+            MinWayMini = way[Pased.IndexOf(MiniDot2)];
             /*for (int m = 0; m < way.Length ; m++)
             {
                 Graphics imageGraphics = Graphics.FromImage(image);
@@ -1381,13 +1346,14 @@ namespace Lab3
 
         private void button3_Click(object sender, EventArgs e)
         {
+            GameC = 2;
+            obhod();
             Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
-            MiniGameFlow = 300;
+
         }
 
         private void button5_Click(object sender, EventArgs e)
