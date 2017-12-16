@@ -105,6 +105,7 @@ namespace Lab3
             }
         }
 
+        #region Methods for main game
         /// <summary>
         /// Возвращает сумму максимальных потоков для всех "использованных" связей
         /// </summary>
@@ -212,34 +213,7 @@ namespace Lab3
                 listView.Items.Add(c);
             }
         }
-
-        /// <summary>
-        /// Возвращает выделенную в данный момент связь типа Connection
-        /// </summary>
-        /// <returns></returns>
-        public Connection GiveSelectedItem()
-        {
-            Connection Connection = new Connection();
-            int min = 0;
-            int max = 0;
-            int flow = 0;
-            try
-            {
-                min = Convert.ToInt32(listView.SelectedItems[0].Text);
-                max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
-                flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
-            }
-            catch
-            {
-                MessageBox.Show("Пожалуйста, выделите нужную связь"); ;
-            }
-            foreach (var conect in ConnectionsList)
-            {
-                if (max == conect.maxWay || min == conect.minWay || flow == conect.maxFlow)
-                    Connection = conect; //Вот тут Connection ссылается на connect. Поэтому когда мы что-то изменяем в Connection (то есть в GiveSelectedItem()), оно меняется и в массиве ConnectionsList
-            }
-            return Connection;
-        }
+        #endregion
 
         #region Methods for second game
 
@@ -525,6 +499,35 @@ namespace Lab3
         }
         #endregion
 
+        #region Methods for drawing
+        /// <summary>
+        /// Возвращает выделенную в данный момент связь типа Connection
+        /// </summary>
+        /// <returns></returns>
+        public Connection GiveSelectedItem()
+        {
+            Connection Connection = new Connection();
+            int min = 0;
+            int max = 0;
+            int flow = 0;
+            try
+            {
+                min = Convert.ToInt32(listView.SelectedItems[0].Text);
+                max = Convert.ToInt32(listView.SelectedItems[0].SubItems[0].Text);
+                flow = Convert.ToInt32(listView.SelectedItems[0].SubItems[1].Text);
+            }
+            catch
+            {
+                MessageBox.Show("Пожалуйста, выделите нужную связь"); ;
+            }
+            foreach (var conect in ConnectionsList)
+            {
+                if (max == conect.maxWay || min == conect.minWay || flow == conect.maxFlow)
+                    Connection = conect; //Вот тут Connection ссылается на connect. Поэтому когда мы что-то изменяем в Connection (то есть в GiveSelectedItem()), оно меняется и в массиве ConnectionsList
+            }
+            return Connection;
+        }
+
         /// <summary>
         /// Рисует игровую картинку (связи и точки)
         /// </summary>
@@ -746,6 +749,46 @@ namespace Lab3
             }
         }
 
+        public bool IsDot(Point point)
+        {
+            bool t = false;
+            foreach (var dot in DotsList)
+            {
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+                {
+                    t = true;
+                }
+            }
+            return t;
+        }
+        #endregion
+
+        #region Table of records and others
+        public void add_result(string text)
+        {
+            using (StreamWriter writer = new StreamWriter(file_score, true))
+            {
+                writer.Write(text + " ");
+            }
+        }
+
+        public void SaveImage()
+        {
+            image.Save(file_image + score.ToString() + ".bmp", ImageFormat.Bmp);
+        }
+
+        public double Score()
+        {
+
+            foreach (var dot in DotsList)
+            {
+                score += 1 - Math.Abs(Math.Abs(2 * dot.currentFill / dot.size) - 1);
+            }
+            return score;
+        }
+        #endregion
+
+        #region Operating buttons
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             FillPictureBox();
@@ -791,19 +834,6 @@ namespace Lab3
                     DrawLine(pen, e.Location);
                 }
             }
-        }
-
-        public bool IsDot(Point point)
-        {
-            bool t = false;
-            foreach (var dot in DotsList)
-            {
-                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
-                {
-                    t = true;
-                }
-            }
-            return t;
         }
 
         private void pictureBox_MouseClick(object sender, MouseEventArgs e)
@@ -866,31 +896,6 @@ namespace Lab3
             label1.Text = "Ваш счет: " + Math.Round(score);
         }
 
-        #region Table of records and others
-        public void add_result(string text)
-        {
-            using (StreamWriter writer = new StreamWriter(file_score, true))
-            {
-                writer.Write(text+" ");
-            }
-        }
-
-        public void SaveImage()
-        {
-            image.Save(file_image+score.ToString()+".bmp", ImageFormat.Bmp);
-        }
-
-        public double Score()
-        {
-            
-            foreach (var dot in DotsList)
-            {
-                score += 1 - Math.Abs(Math.Abs(2 * dot.currentFill / dot.size) - 1);
-            }
-            return score;
-        }
-        #endregion 
-
         private void button_start_Click(object sender, EventArgs e)
         {
             button_start.Enabled = false;
@@ -899,5 +904,6 @@ namespace Lab3
             SetConnections(10);
             RefreshListView();
         }
+        #endregion
     }
 }
