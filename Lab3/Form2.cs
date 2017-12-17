@@ -18,8 +18,8 @@ namespace Lab3
             InitializeComponent();
         }
 
-        string filename = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\res_score.txt"; //Переписать на свой путь
-        string file_image = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"; //Переписать на свой путь
+        string filename = @"Images\res_score.txt"; //Переписать на свой путь
+        string file_image = @"Images\"; //Переписать на свой путь
         string[] result;
         /// <summary>
         /// добавление имени игрока в файл и в result
