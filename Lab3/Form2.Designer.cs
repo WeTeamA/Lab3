@@ -82,7 +82,6 @@
             this.listBox_Result.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listBox_Result.Enabled = false;
             this.listBox_Result.Font = new System.Drawing.Font("MS Reference Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBox_Result.Location = new System.Drawing.Point(13, 65);
             this.listBox_Result.Name = "listBox_Result";
@@ -105,7 +104,6 @@
             // pictureBox
             // 
             this.pictureBox.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.pictureBox.Enabled = false;
             this.pictureBox.Location = new System.Drawing.Point(301, 65);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(480, 480);
@@ -136,6 +134,7 @@
             this.Controls.Add(this.textBox_Name);
             this.Name = "Form2";
             this.Text = "Form2";
+            this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -23,8 +23,8 @@ namespace Lab3
         /// <summary>
         /// ссылка на текстовый документ
         /// </summary>
-        string file_score = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt"; //Переписать на свой путь (и в Form2 тоже)
-        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; //Переписать на свой путь (и в Form2 тоже)
+        string file_score = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\res_score.txt"; //Переписать на свой путь (и в Form2 тоже)
+        string file_image = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"; //Переписать на свой путь (и в Form2 тоже)
         double score = 0;
         /// <summary>
         /// Точки данной игрыбер
@@ -1227,6 +1227,8 @@ namespace Lab3
             RefreshAllValues();
             RefreshListView();
             FillPictureBox();
+            Score();
+            label1.Text = "Ваш счет: "+Math.Round(score).ToString();
 
             /*string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
             foreach (var dot in UsedDots)

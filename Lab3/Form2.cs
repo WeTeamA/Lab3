@@ -18,8 +18,8 @@ namespace Lab3
             InitializeComponent();
         }
 
-        string filename = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt"; //Переписать на свой путь
-        string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; //Переписать на свой путь
+        string filename = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\res_score.txt"; //Переписать на свой путь
+        string file_image = @"C:\Users\lebox\Desktop\Учеба\ООП\Lab.3\Lab3\Images\"; //Переписать на свой путь
         string[] result;
         /// <summary>
         /// добавление имени игрока в файл и в result
@@ -47,7 +47,7 @@ namespace Lab3
         /// </summary>
         public void RefreshListBox()
         {
-
+            listBox_Result.Items.Clear();
             foreach (var item in result)
             {
                 ListViewItem c = new ListViewItem(item.Split(' ')[1]);
@@ -78,8 +78,6 @@ namespace Lab3
 
         private void button1_Click(object sender, EventArgs e)
         {
-            listBox_Result.Enabled = true;
-            pictureBox.Enabled = true;
             textBox_Name.Enabled = false;
             label1.Enabled = false;
             button_AddResult.Enabled = false;
@@ -105,6 +103,13 @@ namespace Lab3
                     pictureBox.Image = new Bitmap(file_image + item.Split(' ')[0] + ".bmp", true);
                 }
             }
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            read_result();
+            Sort_Result(result);
+            RefreshListBox();
         }
     }
 }
