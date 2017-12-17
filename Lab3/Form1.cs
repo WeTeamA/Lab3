@@ -26,6 +26,9 @@ namespace Lab3
         string file_score = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\res_score.txt"; //Переписать на свой путь (и в Form2 тоже)
         string file_image = @"C:\Users\Михаил\Google Диск\Учеба\Третий семестр\ООП\Лабораторная работа №3\Lab3\Images\"; //Переписать на свой путь (и в Form2 тоже)
         double score = 0;
+        /// <summary>
+        /// Точки данной игрыбер
+        /// </summary>
         List<Dot> DotsList = new List<Dot>();
         /// <summary>
         /// Учавствующие в рассчетах точки
@@ -77,17 +80,20 @@ namespace Lab3
         /// </summary>
         double MinWayMini;
         /// <summary>
-        /// Минимальный поток выигрышного пути 2-й мини игры
-        /// </summary>
-        double MiniGameFoundFlow;
-        /// <summary>
-        /// Минимальный поток пути пользователя
-        /// </summary>
-        double MiniGameFlow = 300;
-        /// <summary>
-        /// Минимальный поток пути пользователя
+        /// Последовательность точек для 2 мини игры
         /// </summary>
         List<Dot> GamingList = new List<Dot>();
+        /// <summary>
+        /// Последовательность точек для 2 мини игры
+        /// </summary>
+        List<Dot> GamingList3 = new List<Dot>();
+        /// <summary>
+        /// Время игры
+        /// </summary>
+        int time;
+
+
+
         /// <summary>
         /// Заполняет поле-массив DotsList десятью рандомными точками
         /// </summary>
@@ -967,7 +973,17 @@ namespace Lab3
                             Dot2 = null;
                             if (Math.Round(CurrWay, 1) == Math.Round(MinWayMini,1))
                             {
-                                MessageBox.Show("Правильно!");
+                                timer1.Enabled = false;
+                                label2.Visible = false;
+                                label4.Visible = false;
+                                MessageBox.Show("Правильно! Вы получаете 3 бонусных связи!");
+                                GameC = 0;
+                                SetConnections(3);
+                                FillPictureBox();
+                                RefreshListView();
+                                Dot1 = null;
+                                Dot2 = null;
+                                CurrWay = 0;
                             }
                         }
                     }
@@ -976,13 +992,17 @@ namespace Lab3
                         if (e.Button == MouseButtons.Left)
                         {
                             FindDot(e.Location);
-                            if (IsUsedDots(Dot1))
+                            if (IsUsedDots(Dot1) && Dot1 == MiniDot1)
                             {
                                 DrawEll(Dot1);
                             }
                             else
                             {
-                                Dot1 = null;
+                                if (Dot1 != null)
+                                {
+                                    MessageBox.Show("Выберете начальную точку(Зеленая)");
+                                    Dot1 = null;
+                                }                                
                             }
                         }
                     }
@@ -1011,25 +1031,37 @@ namespace Lab3
                             pictureBox.Image = image;
                             GamingList.Add(Dot2);
                             Dot1 = Dot2;
-                            Dot2 = null;
                             if (CheckSecondGame(GiveMaxFlowForWays(GamingList), MiniDot1, MiniDot2) && Dot2 == MiniDot2)
                             {
-                                MessageBox.Show("Правильно!");
+                                timer1.Enabled = false;
+                                label2.Visible = false;
+                                label4.Visible = false;
+                                MessageBox.Show("Правильно! Вы получаете 5 бонусных связи!");
+                                GameC = 0;
+                                SetConnections(5);
+                                FillPictureBox();
+                                RefreshListView();
+                                Dot1 = null;
+                                Dot2 = null;
+                                GamingList = null;
                             }
+                            Dot2 = null;
                         }
                     }
                     else
                     {
                         if (e.Button == MouseButtons.Left)
-                        {
                             FindDot(e.Location);
-                            if (IsUsedDots(Dot1))
+                        if (IsUsedDots(Dot1) && Dot1 == MiniDot1)
+                        {
+                            GamingList.Add(Dot1);
+                            DrawEll(Dot1);
+                        }
+                        else
+                        {
+                            if (Dot1 != null)
                             {
-                                GamingList.Add(Dot1);
-                                DrawEll(Dot1);
-                            }
-                            else
-                            {
+                                MessageBox.Show("Выберете начальную точку(Зеленая)");
                                 Dot1 = null;
                             }
                         }
@@ -1043,10 +1075,88 @@ namespace Lab3
                     }
                     break;
                 case 3:
+                    if (Dot1 != null) //При выборе второй точки для реализации связи (Исправить и написать все 9 пунктов происходящего)
+                    {
+                        FindDot(e.Location);
+                        if (e.Button == MouseButtons.Left && IsUsedDots3(Dot2))
+                        {
+                            Graphics imageGraphics = Graphics.FromImage(image);
+                            SolidBrush brush1 = new SolidBrush(Color.Red);
+                            Pen pen = new Pen(Brushes.Red, 2.0F);
+                            if (MiniDot2 != Dot2 && MiniDot1 != Dot2)
+                            {
+                                imageGraphics.FillEllipse(brush1, Dot2.x - 5, Dot2.y + 5, 10, 10);
+                            }
+                            imageGraphics.DrawLine(pen, Dot1.x, Dot1.y + 10, Dot2.x, Dot2.y + 10);
+                            pictureBox.Image = image;
+                            GamingList.Add(Dot2);
+                            Dot1 = Dot2;
+                            if (GamingList.Count == 5)
+                            {
+                                if (CheckThirdGame(GetSummWay(GamingList), GamingList))
+                                {
+                                    timer1.Enabled = false;
+                                    label2.Visible = false;
+                                    label4.Visible = false;
+                                    MessageBox.Show("Правильно! Вы получаете 7 бонусных связи!");
+                                    GameC = 0;
+                                    SetConnections(7);
+                                    FillPictureBox();
+                                    RefreshListView();
+                                    Dot1 = null;
+                                    Dot2 = null;
+                                    GamingList = null;
+                                    GamingList3 = null;
+                                }
+                            }
+                            Dot2 = null;
+                        }
+                    }
+                    else
+                    {
+                        if (e.Button == MouseButtons.Left)
+                            FindDot(e.Location);
+                        if (Dot1 != null)
+                        {                            
+                            if (IsUsedDots3(Dot1))
+                            {
+                                GamingList.Add(Dot1);
+                                DrawEll(Dot1);
+                            }
+                            else
+                            {
+                                if (Dot1 != null)
+                                {
+                                    MessageBox.Show("Выберете игровую точку(Зеленая)");
+                                    Dot1 = null;
+                                }
+                            }
+                        }                        
+                    }
+                    if (e.Button == MouseButtons.Right)
+                    {
+                        Fill_MiniGame_3_PicBox();
+                        Dot1 = null;
+                        Dot2 = null;
+                        GamingList.Clear();
+                    }
                     break;
             }
 
 
+        }
+
+        public bool IsUsedDots3(Dot Dot)
+        {
+            bool t = false;
+            foreach(Dot dot in GamingList3)
+            {
+                if (Dot == dot)
+                {
+                    t = true;
+                }
+            }
+            return t;
         }
 
         private void button_start_Click(object sender, EventArgs e)
@@ -1162,6 +1272,7 @@ namespace Lab3
                 }
                 SolidBrush brush1 = new SolidBrush(Color.LightGreen);
                 imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
+                brush1 = new SolidBrush(Color.Blue);
                 imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
                 pictureBox.Image = image;
             }
@@ -1170,11 +1281,16 @@ namespace Lab3
 
         private void button1_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Вам выпала мини-игра! Постройте путь минимальной длины от зеленой до синей точки по существующим связям.");
+            time = 15;
+            label2.Visible = true;
+            label4.Visible = true;
+            label4.Text = time.ToString();
+            timer1.Enabled = true;
             GameC = 1;
             CurrWay = 0;
             MinWay(obhod());
             Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
-
         }
 
         public List<Dot> obhod()
@@ -1332,10 +1448,41 @@ namespace Lab3
             }
             SolidBrush brush1 = new SolidBrush(Color.LightGreen);
             imageGraphics.FillEllipse(brush1, dot1.x - 5, dot1.y + 5, 10, 10);
+            brush1 = new SolidBrush(Color.Blue);
             imageGraphics.FillEllipse(brush1, dot2.x - 5, dot2.y + 5, 10, 10);
             pictureBox.Image = image;
         }
 
+        public void Fill_MiniGame_3_PicBox()
+        {
+            Font drawFont = new Font("Times New Roman", 10);
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            SolidBrush wbrush = new SolidBrush(Color.White);
+            Graphics imageGraphics = Graphics.FromImage(image);
+            imageGraphics.FillRectangle(wbrush, 0, 0, 480, 480);
+            foreach (var line in UsedConnections)
+            {
+                Single width = Convert.ToSingle(line.maxFlow / 10);
+                Pen pen = new Pen(Color.Gray);
+                imageGraphics.DrawLine(pen, line.firstDot.x, line.firstDot.y + 10, line.secondDot.x, line.secondDot.y + 10);
+                int Line = Math.Abs((int)line.currentWay);//Число посередине связи
+                String sline = Line.ToString();
+                PointF pfill = new PointF((line.firstDot.x + line.secondDot.x) / 2, (line.firstDot.y + line.secondDot.y) / 2);
+                imageGraphics.DrawString(sline, drawFont, drawBrush, pfill);
+
+            }
+            foreach (var point in DotsList)
+            {
+                SolidBrush brush = new SolidBrush(Color.Gray);
+                imageGraphics.FillEllipse(brush, point.x - 5, point.y + 5, 10, 10);
+            }
+            SolidBrush brush1 = new SolidBrush(Color.LightGreen);
+            foreach (Dot dot in GamingList3)
+            {
+                imageGraphics.FillEllipse(brush1, dot.x - 5, dot.y + 5, 10, 10);
+            }
+            pictureBox.Image = image;
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -1346,6 +1493,12 @@ namespace Lab3
 
         private void button3_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Вам выпала мини-игра! Постройте маршрут с максимальный потоком от зеленой до синей точки. Строить маршрут можно только по существующим связям");
+            time = 20;
+            label2.Visible = true;
+            label4.Visible = true;
+            label4.Text = time.ToString();
+            timer1.Enabled = true;
             GameC = 2;
             obhod();
             Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
@@ -1358,11 +1511,69 @@ namespace Lab3
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Вам выпала мини-игра! Постройте путь минимального пути, который будет соединять какждую зеленую точку.(Задача коммивояжера)");
+            time = 30;
+            label2.Visible = true;
+            label4.Visible = true;
+            label4.Text = time.ToString();
+            timer1.Enabled = true;
+            GameC = 3;
+            SetDotsForThirdGame(GamingList3);
+            Fill_MiniGame_3_PicBox();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (time > 0)
+            {
+                time --;
+                label4.Text = time.ToString();
+            }
+            else
+            {
+                timer1.Stop();
+                MessageBox.Show("Время вышло!");
+                switch (GameC)
+                {
+                    case 1:
+                        timer1.Enabled = false;
+                        label2.Visible = false;
+                        label4.Visible = false;
+                        GameC = 0;
+                        FillPictureBox();
+                        Dot1 = null;
+                        Dot2 = null;
+                        CurrWay = 0;
+                        break;
+                    case 2:
+                        timer1.Enabled = false;
+                        label2.Visible = false;
+                        label4.Visible = false;
+                        GameC = 0;
+                        FillPictureBox();
+                        Dot1 = null;
+                        Dot2 = null;
+                        GamingList = null;
+                        break;
+                    case 3:
+                        timer1.Enabled = false;
+                        label2.Visible = false;
+                        label4.Visible = false;
+                        GameC = 0;
+                        FillPictureBox();
+                        Dot1 = null;
+                        Dot2 = null;
+                        GamingList = null;
+                        GamingList3 = null;
+                        break;
+                }
+
+            }
 
         }
     }
