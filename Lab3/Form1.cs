@@ -1043,7 +1043,7 @@ namespace Lab3
                                 RefreshListView();
                                 Dot1 = null;
                                 Dot2 = null;
-                                GamingList = null;
+                                GamingList = new List<Dot>();
                             }
                             Dot2 = null;
                         }
@@ -1105,8 +1105,8 @@ namespace Lab3
                                     RefreshListView();
                                     Dot1 = null;
                                     Dot2 = null;
-                                    GamingList = null;
-                                    GamingList3 = null;
+                                    GamingList = new List<Dot>();
+                                    GamingList3 = new List<Dot>();
                                 }
                             }
                             Dot2 = null;
@@ -1560,7 +1560,7 @@ namespace Lab3
                         FillPictureBox();
                         Dot1 = null;
                         Dot2 = null;
-                        GamingList = null;
+                        GamingList = new List<Dot>();
                         break;
                     case 3:
                         timer1.Enabled = false;
@@ -1570,8 +1570,8 @@ namespace Lab3
                         FillPictureBox();
                         Dot1 = null;
                         Dot2 = null;
-                        GamingList = null;
-                        GamingList3 = null;
+                        GamingList = new List<Dot>();
+                        GamingList3 = new List<Dot>();
                         break;
                 }
 
