@@ -1091,7 +1091,7 @@ namespace Lab3
                             pictureBox.Image = image;
                             GamingList.Add(Dot2);
                             Dot1 = Dot2;
-                            if (GamingList.Count == 5)
+                            if (GamingList.Count == 6)
                             {
                                 if (CheckThirdGame(GetSummWay(GamingList), GamingList))
                                 {
