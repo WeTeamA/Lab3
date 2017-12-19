@@ -16,6 +16,8 @@ namespace Lab3
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Сюда написать запуск моей формы с заставкой, а потом уже основной формы!
+            Application.Run(new Form3());
             Application.Run(new Form1());
         }
     }
