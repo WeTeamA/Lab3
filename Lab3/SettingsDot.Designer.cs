@@ -12,7 +12,7 @@ namespace Lab3 {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
     internal sealed partial class SettingsDot : global::System.Configuration.ApplicationSettingsBase {
         
         private static SettingsDot defaultInstance = ((SettingsDot)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SettingsDot())));
@@ -80,6 +80,54 @@ namespace Lab3 {
             }
             set {
                 this["maxWay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int time1 {
+            get {
+                return ((int)(this["time1"]));
+            }
+            set {
+                this["time1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int time2 {
+            get {
+                return ((int)(this["time2"]));
+            }
+            set {
+                this["time2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int time3 {
+            get {
+                return ((int)(this["time3"]));
+            }
+            set {
+                this["time3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int chance {
+            get {
+                return ((int)(this["chance"]));
+            }
+            set {
+                this["chance"] = value;
             }
         }
     }

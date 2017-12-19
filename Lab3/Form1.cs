@@ -108,6 +108,10 @@ namespace Lab3
                  DotsList.Add(new Dot(random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.maxWay), random.Next(0, SettingsDot.Default.speed)));
                  DotsListCount = 1;
              }
+            else
+            {
+                count++;
+            }
              for (int i = DotsList.Count; i < DotsListCount + count - 1; i++)
              {
                  bool check = true;
@@ -139,7 +143,13 @@ namespace Lab3
                 int max = random.Next(20, 474);
                 int min = random.Next(20, max);
                 double flow = random.Next(10, 100);
-                ConnectionsList.Add(new Connection(max, min, flow));
+                int chance = random.Next(1, (100 / SettingsDot.Default.chance) );
+                bool minigame = false;
+                if (chance == 1)
+                {
+                    minigame = true;
+                }
+                ConnectionsList.Add(new Connection(max, min, flow, minigame));
             }
         }
 
@@ -245,6 +255,7 @@ namespace Lab3
             listView.Items.Clear();
             foreach (var conect in ConnectionsList)
             {
+                string s = conect.minWay.ToString();
                 ListViewItem c = new ListViewItem(conect.minWay.ToString());
                 c.SubItems.Add(conect.maxWay.ToString());
                 c.SubItems.Add(conect.maxFlow.ToString());
@@ -762,7 +773,7 @@ namespace Lab3
         {
             foreach (var dot in DotsList)
             {
-                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 6)
                 {
                     if (Dot1 == null)
                     {
@@ -792,7 +803,7 @@ namespace Lab3
             bool t = false;
             foreach (var dot in DotsList)
             {
-                if (Math.Sqrt(Math.Abs(point.X - dot.x)) + Math.Sqrt(Math.Abs(point.Y - dot.y)) <= 7)
+                if (Math.Sqrt(Math.Abs(point.X - dot.x )) + Math.Sqrt(Math.Abs(point.Y - dot.y )) <= 6)
                 {
                     t = true;
                 }
@@ -907,9 +918,6 @@ namespace Lab3
                         }
                     }
                     break;
-                case 3:
-
-                    break;
             }
         }
 
@@ -969,9 +977,7 @@ namespace Lab3
                                     break;
                                 }
                             }
-                            Dot1 = Dot2;
-                            Dot2 = null;
-                            if (Math.Round(CurrWay, 1) == Math.Round(MinWayMini,1))
+                            if (Math.Round(CurrWay, 1) == Math.Round(MinWayMini, 1))
                             {
                                 timer1.Enabled = false;
                                 label2.Visible = false;
@@ -985,6 +991,18 @@ namespace Lab3
                                 Dot2 = null;
                                 CurrWay = 0;
                             }
+                            else if (Dot2 == MiniDot2)
+                            {
+                                timer1.Stop();
+                                MessageBox.Show("Соеденение неправильно, попробуйте еще раз");
+                                Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
+                                CurrWay = 0;
+                                Dot1 = null;
+                                Dot2 = null;
+                                timer1.Start();
+                            }
+                            Dot1 = Dot2;
+                            Dot2 = null;
                         }
                     }
                     else
@@ -1044,6 +1062,16 @@ namespace Lab3
                                 Dot1 = null;
                                 Dot2 = null;
                                 GamingList = new List<Dot>();
+                            }
+                            else if (Dot2 == MiniDot2)
+                            {
+                                timer1.Stop();
+                                MessageBox.Show("Соеденение неправильно, попробуйте еще раз");
+                                Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
+                                Dot1 = null;
+                                Dot2 = null;
+                                GamingList.Clear();
+                                timer1.Start();
                             }
                             Dot2 = null;
                         }
@@ -1107,6 +1135,16 @@ namespace Lab3
                                     Dot2 = null;
                                     GamingList = new List<Dot>();
                                     GamingList3 = new List<Dot>();
+                                }
+                                else
+                                {
+                                    timer1.Stop();
+                                    MessageBox.Show("Соеденение неправильно, попробуйте еще раз");
+                                    Fill_MiniGame_3_PicBox();
+                                    Dot1 = null;
+                                    Dot2 = null;
+                                    GamingList.Clear();
+                                    timer1.Start();
                                 }
                             }
                             Dot2 = null;
@@ -1229,6 +1267,54 @@ namespace Lab3
             FillPictureBox();
             Score();
             label1.Text = "Ваш счет: "+Math.Round(score).ToString();
+            if (UsedConnections.Count % 5 == 0 && UsedConnections.Count != 0)
+            {
+                SetDots(1);
+            }
+            if (UsedConnections[UsedConnections.Count - 1].minigame)
+            {
+                Random random = new Random();
+                GameC = random.Next(1, 3);
+            }
+            switch (GameC)
+            {
+                case 1:
+                    MessageBox.Show("Вам выпала мини-игра! Постройте путь минимальной длины от зеленой до синей точки по существующим связям.");
+                    time = SettingsDot.Default.time1;
+                    label2.Visible = true;
+                    label4.Visible = true;
+                    label4.Text = time.ToString();
+                    timer1.Enabled = true;
+                    GameC = 1;
+                    CurrWay = 0;
+                    MinWay(obhod());
+                    Fill_MiniGame_1_PicBox(MiniDot1, MiniDot2);
+                    break;
+                case 2:
+                    MessageBox.Show("Вам выпала мини-игра! Постройте маршрут с максимальный потоком от зеленой до синей точки. Строить маршрут можно только по существующим связям");
+                    time = SettingsDot.Default.time2;
+                    label2.Visible = true;
+                    label4.Visible = true;
+                    label4.Text = time.ToString();
+                    timer1.Enabled = true;
+                    GameC = 2;
+                    obhod();
+                    Fill_MiniGame_2_PicBox(MiniDot1, MiniDot2);
+                    break;
+                case 3:
+                    MessageBox.Show("Вам выпала мини-игра! Постройте путь минимального пути, который будет соединять какждую зеленую точку.(Задача коммивояжера)");
+                    time = SettingsDot.Default.time3;
+                    label2.Visible = true;
+                    label4.Visible = true;
+                    label4.Text = time.ToString();
+                    timer1.Enabled = true;
+                    GameC = 3;
+                    SetDotsForThirdGame(GamingList3);
+                    Fill_MiniGame_3_PicBox();
+                    break;
+
+
+            }
 
             /*string a = "Заполненность точек (в порядке установки связей): " + "\r\n"; //Проверка заполненности для отладки программы
             foreach (var dot in UsedDots)
@@ -1284,7 +1370,7 @@ namespace Lab3
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Вам выпала мини-игра! Постройте путь минимальной длины от зеленой до синей точки по существующим связям.");
-            time = 15;
+            time = SettingsDot.Default.time1;
             label2.Visible = true;
             label4.Visible = true;
             label4.Text = time.ToString();
@@ -1496,7 +1582,7 @@ namespace Lab3
         private void button3_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Вам выпала мини-игра! Постройте маршрут с максимальный потоком от зеленой до синей точки. Строить маршрут можно только по существующим связям");
-            time = 20;
+            time = SettingsDot.Default.time2;
             label2.Visible = true;
             label4.Visible = true;
             label4.Text = time.ToString();
@@ -1514,7 +1600,7 @@ namespace Lab3
         private void button5_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Вам выпала мини-игра! Постройте путь минимального пути, который будет соединять какждую зеленую точку.(Задача коммивояжера)");
-            time = 30;
+            time = SettingsDot.Default.time3;
             label2.Visible = true;
             label4.Visible = true;
             label4.Text = time.ToString();

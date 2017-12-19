@@ -14,6 +14,7 @@ namespace Lab3
         public double maxFlow;
         public Dot firstDot;
         public Dot secondDot;
+        public bool minigame;
 
         /// <summary>
         /// Конструктор от макс и мин пути, и от потока (все рандомные значения)
@@ -21,11 +22,12 @@ namespace Lab3
         /// <param name="Max"></param>
         /// <param name="Min"></param>
         /// <param name="Flow"></param>
-        public Connection(int Max, int Min, double Flow)
+        public Connection(int Max, int Min, double Flow, bool Minigame)
         {
             maxFlow = Flow;
             maxWay = Max;
             minWay = Min;
+            minigame = Minigame;
         }
 
         public Connection()
